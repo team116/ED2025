@@ -27,6 +27,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
 import frc.robot.subsystems.CommandSwerveDrivetrainPathPlanner;
 
 public class RobotContainer {
+    private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -108,13 +109,13 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         if (autoChooserChoreo != null) {
-            SmartDashboard.putString("AutoMode", "Choreo");
+            SmartDashboard.putString(AUTO_MODE_KEY, "Choreo");
             return autoChooserChoreo.selectedCommand();
         } else if (autoChooserPathPlanner != null) {
-            SmartDashboard.putString("AutoMode", "PathPlanner");
+            SmartDashboard.putString(AUTO_MODE_KEY, "PathPlanner");
             return autoChooserPathPlanner.getSelected();
         } else {
-            SmartDashboard.putString("AutoMode", "Custom");
+            SmartDashboard.putString(AUTO_MODE_KEY, "Custom");
             return new InstantCommand();
         }
     }
