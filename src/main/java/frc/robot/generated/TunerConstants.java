@@ -201,7 +201,7 @@ public class TunerConstants {
      * This should only be called once in your robot program,.
      */
     public static CommandSwerveDrivetrain createDrivetrain() {
-        if (PathPlannerType.SELECTED == PathPlannerType.CHOREO) {
+        if (PathPlanningType.SELECTED == PathPlanningType.CHOREO) {
             return new CommandSwerveDrivetrainChoreo(
                 DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
             );
