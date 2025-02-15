@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -19,30 +22,30 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public final class ConstantsOriginal {
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 0;
-    public static final int kRearLeftDriveMotorPort = 2;
-    public static final int kFrontRightDriveMotorPort = 4;
-    public static final int kRearRightDriveMotorPort = 6;
+    public static final int kFrontLeftDriveMotorPort = 15;
+    public static final int kRearLeftDriveMotorPort = 0;
+    public static final int kFrontRightDriveMotorPort = 16;
+    public static final int kRearRightDriveMotorPort = 3;
 
-    public static final int kFrontLeftTurningMotorPort = 1;
-    public static final int kRearLeftTurningMotorPort = 3;
-    public static final int kFrontRightTurningMotorPort = 5;
-    public static final int kRearRightTurningMotorPort = 7;
+    public static final int kFrontLeftTurningMotorPort = 18;
+    public static final int kRearLeftTurningMotorPort = 1;
+    public static final int kFrontRightTurningMotorPort = 17;
+    public static final int kRearRightTurningMotorPort = 2;
 
     public static final int[] kFrontLeftTurningEncoderPorts = new int[] {0, 1};
-    public static final int[] kRearLeftTurningEncoderPorts = new int[] {2, 3};
+    public static final int[] kRearLeftTurningEncoderPorts = new int[] {12, 13};
     public static final int[] kFrontRightTurningEncoderPorts = new int[] {4, 5};
-    public static final int[] kRearRightTurningEncoderPorts = new int[] {6, 7};
+    public static final int[] kRearRightTurningEncoderPorts = new int[] {8, 9};
 
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = true;
     public static final boolean kFrontRightTurningEncoderReversed = false;
     public static final boolean kRearRightTurningEncoderReversed = true;
 
-    public static final int[] kFrontLeftDriveEncoderPorts = new int[] {8, 9};
-    public static final int[] kRearLeftDriveEncoderPorts = new int[] {10, 11};
-    public static final int[] kFrontRightDriveEncoderPorts = new int[] {12, 13};
-    public static final int[] kRearRightDriveEncoderPorts = new int[] {14, 15};
+    public static final int[] kFrontLeftDriveEncoderPorts = new int[] {2, 3};
+    public static final int[] kRearLeftDriveEncoderPorts = new int[] {14, 15};
+    public static final int[] kFrontRightDriveEncoderPorts = new int[] {6, 7};
+    public static final int[] kRearRightDriveEncoderPorts = new int[] {10, 11};
 
     public static final boolean kFrontLeftDriveEncoderReversed = false;
     public static final boolean kRearLeftDriveEncoderReversed = true;
@@ -113,5 +116,25 @@ public final class ConstantsOriginal {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
             kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+  public static final class MOD_10 {
+      public static final int DRIVE_MOTOR_ID = 11;
+      public static final int ANGLE_MOTOR_ID = 12;
+      public static final int CAN_CODER_ID = 10;
+  }
+  public static final class MOD_20 {
+    public static final int DRIVE_MOTOR_ID = 21;
+    public static final int ANGLE_MOTOR_ID = 22;
+    public static final int CAN_CODER_ID = 20;
+  }
+  public static final class MOD_30 {
+    public static final int DRIVE_MOTOR_ID = 31;
+    public static final int ANGLE_MOTOR_ID = 32;
+    public static final int CAN_CODER_ID = 30;
+  }
+  public static final class MOD_40 {
+    public static final int DRIVE_MOTOR_ID = 41;
+    public static final int ANGLE_MOTOR_ID = 42;
+    public static final int CAN_CODER_ID = 40;
   }
 }

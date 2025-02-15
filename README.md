@@ -4,24 +4,24 @@ All CTRE-Phoenix (v6)
 - 8 Kraken (Cross The Road Electronics - CTRE) Motors
 - 4 CTRE CANCoders
 ### Front Left Swerve Module (3 - numbers used by BAMF)
-- Drive Motor CAN ID: ??
-- Steer Motor CAN ID: ??
-- Absolute CANCoder ID: ??
+- Drive Motor CAN ID: 31
+- Steer Motor CAN ID: 32
+- Absolute CANCoder ID: 30
 
 ### Front Right Swerve Module (4)
-- Drive Motor CAN ID: ??
-- Steer Motor CAN ID: ??
-- Absolute CANCoder ID: ??
+- Drive Motor CAN ID: 21
+- Steer Motor CAN ID: 22
+- Absolute CANCoder ID: 20
 
 ### Back Left Swerve Module (2)
-- Drive Motor CAN ID: ??
-- Steer Motor CAN ID: ??
-- Absolute CANCoder ID: ??
+- Drive Motor CAN ID: 41
+- Steer Motor CAN ID: 42
+- Absolute CANCoder ID: 40
 
 ### Back Right Swerve Module (1)
-- Drive Motor CAN ID: ??
-- Steer Motor CAN ID: ??
-- Absolute CANCoder ID: ??
+- Drive Motor CAN ID: 11
+- Steer Motor CAN ID: 12
+- Absolute CANCoder ID: 10
 
 ## Lift / Elevator
 All REVLib (No linear encoder)
