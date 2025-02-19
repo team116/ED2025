@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 9.531,
+        "y": 5.93545115894145
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 10.227814569536424,
+        "y": 5.971771523178806
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 12.559581953642384,
+        "y": 5.201779801324503
+      },
+      "prevControl": {
+        "x": 12.774295350055224,
+        "y": 5.329835091730104
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.59965312375234
+  },
+  "reversed": false,
+  "folder": "RedAlliancePaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -0.3032679345121087
+  },
+  "useDefaultConstraints": true
+}
