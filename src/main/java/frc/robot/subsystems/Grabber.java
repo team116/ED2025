@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.io.Console;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
