@@ -26,29 +26,31 @@ All CTRE-Phoenix (v6)
 ## Lift / Elevator
 All REVLib (No linear encoder)
 - 2 NEO Motors
+- Left Motor CAN ID: 50
+- Right Motor CAN ID: 51
 - top and bottom limit switches (safety)
 
 ## Grabber / Intake / THE Manipulator (combined subsystems?)
 ### Hand / Claw
 All REVLib
 - 2 NEO Motors
-- Left Motor CAN ID: ??
-- Right Motor CAN ID: ??
+- Left Motor CAN ID: 55
+- Right Motor CAN ID: 56
 - coral contact limit switch
 - algae contact limit switch
 
 ### Wrist
 All REVLib (?? or is there a CANCoder or other type of abs encoder ??)
-- Probably CANCoder
 - 1 NEO Motor
-- Motor CAN ID: ??
+- Motor CAN ID: 57
+- Probably CANCoder
+- CAN Coder CAN ID: 58
 - 2 max ranges limit switches (safety)
 
 ## Climber
 All REVLib
-- 1 NEO Motors
-- Left Motor CAN ID: ??
-- Right Motor CAN ID: ??
+- 1 NEO Motor
+- Motor CAN ID: 60
 - one stop limit switch (safety)
 
 ## Misc
