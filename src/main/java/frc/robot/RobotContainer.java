@@ -46,6 +46,10 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    private boolean slowModeActive = false;
+
+    private boolean superSlowModeActive = false;
+
     /* Path follower */
     //private final AutoFactory autoFactoryChoreo;
     //private final AutoRoutinesChoreo autoRoutinesChoreo;
@@ -105,6 +109,9 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        joystick.x().onTrue(new InstantCommand(() -> toggleSlowMode()));
+        joystick.y().onTrue(new InstantCommand(() -> toggleSuperSlowMode()));
     }
 
     public Command getAutonomousCommand() {
@@ -121,11 +128,34 @@ public class RobotContainer {
     }
 
     public double shape(double initial) {
-        if (initial < 0) {
-            return -(initial * initial);
+        if(slowModeActive) {
+            return (initial * Math.abs(initial))/2;
+        } else if(superSlowModeActive) {
+            return (initial * Math.abs(initial))/4;
+        } else {
+           return initial * Math.abs(initial);
         }
-        else {
-            return initial * initial;
-        }
+    }
+
+    public void toggleSlowMode() {
+        slowModeActive = !slowModeActive;
+        if(superSlowModeActive)
+            superSlowModeActive = false;
+        // return drivetrain.applyRequest(() ->
+        //     drive.withVelocityX(shape(-joystick.getLeftY())/2 * MaxSpeed) // Drive forward with negative Y (forward)
+        //         .withVelocityY(shape(-joystick.getLeftX())/2 * MaxSpeed) // Drive left with negative X (left)
+        //         .withRotationalRate(shape(-joystick.getRightX())/2 * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        // );
+    }
+
+    public void toggleSuperSlowMode() {
+        superSlowModeActive = !superSlowModeActive;
+        if(slowModeActive)
+            slowModeActive = false;
+        // return drivetrain.applyRequest(() ->
+        // drive.withVelocityX(shape(-joystick.getLeftY())/4 * MaxSpeed) // Drive forward with negative Y (forward)
+        //     .withVelocityY(shape(-joystick.getLeftX())/4 * MaxSpeed) // Drive left with negative X (left)
+        //     .withRotationalRate(shape(-joystick.getRightX())/4 * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        // );
     }
 }
