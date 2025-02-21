@@ -12,15 +12,19 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
@@ -112,6 +116,8 @@ public class RobotContainer {
 
         joystick.x().onTrue(new InstantCommand(() -> toggleSlowMode()));
         joystick.y().onTrue(new InstantCommand(() -> toggleSuperSlowMode()));
+
+        //joystick.rightBumper().onTrue(new InstantCommand(() -> alignToAprilTag()));
     }
 
     public Command getAutonomousCommand() {
@@ -157,5 +163,26 @@ public class RobotContainer {
         //     .withVelocityY(shape(-joystick.getLeftX())/4 * MaxSpeed) // Drive left with negative X (left)
         //     .withRotationalRate(shape(-joystick.getRightX())/4 * MaxAngularRate) // Drive counterclockwise with negative X (left)
         // );
+    }
+
+    public void alignToAprilTag(int targetAprilTag) {
+        //
+        LimelightHelpers.setPriorityTagID("", targetAprilTag);
+        Pose2d position = LimelightHelpers.getBotPose2d("");
+
+        //Move with desired position based on april tag ID difference with current position in relation to april tag
+        
+        LimelightResults results = LimelightHelpers.getLatestResults("");
+
+        Pose3d desiredPosition = LimelightHelpers.getTargetPose3d_RobotSpace(null);
+        //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+        double distanceToTarget = LimelightHelpers.getBotPoseEstimate_wpiBlue("").rawFiducials[0].distToRobot;
+        
+        
+
+        double offsetSideways = LimelightHelpers.getTX("");
+        double offsetForward = LimelightHelpers.getTY("");
+        LimelightHelpers.getRawFiducials(AUTO_MODE_KEY);
+
     }
 }
