@@ -28,9 +28,15 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
-import frc.robot.subsystems.CommandSwerveDrivetrainPathPlanner;
+import frc.robot.subsystems.CommandSwerveDrivetrainPathPlanner; 
+
+import java.util.*;
 
 public class RobotContainer {
+
+    private static final List<String> Auto_Running_Name = new ArrayList<String>(Arrays.asList("TopBoundBlueAlliance","CenterBoundBlueAlliance",
+            "BottomBoundBlueAlliance","TopBoundRedAlliance","CenterBoundRedAlliance","BottomBoundRedAlliance"));
+
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = (RotationsPerSecond.of(0.75).in(RadiansPerSecond)) / 2.0d; // 3/4 of a rotation per second max angular velocity
@@ -79,7 +85,7 @@ public class RobotContainer {
         }
 
         if (drivetrain instanceof CommandSwerveDrivetrainPathPlanner) {
-            autoChooserPathPlanner = AutoBuilder.buildAutoChooser("Tests");
+            autoChooserPathPlanner = AutoBuilder.buildAutoChooser(Auto_Running_Name.get(0)); // Index from original list for given autonomous that we want to execute
             SmartDashboard.putData("Auto Mode", autoChooserPathPlanner);
         }
 
