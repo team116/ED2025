@@ -62,6 +62,8 @@ public class RobotContainer {
     public static final String SLOW_MODE = "Slow";
     public static final String CRAWL_MODE = "Crawl";
 
+    public static final String APRIL_TAG_KEY = "AprilTag in view";
+
     /* Path follower */
     //private final AutoFactory autoFactoryChoreo;
     //private final AutoRoutinesChoreo autoRoutinesChoreo;
@@ -186,24 +188,22 @@ public class RobotContainer {
         }
     }
 
-    public void alignToAprilTag(int targetAprilTag) {
-        //
-        LimelightHelpers.setPriorityTagID("", targetAprilTag);
-        Pose2d position = LimelightHelpers.getBotPose2d("");
+    public void alignToAprilTag() {
+        double targetAprilTag = LimelightHelpers.getFiducialID(Constants.LIMELIGHT_NAME);
+        //LimelightHelpers.setPriorityTagID("", (int)targetAprilTag);
+        //Pose2d position = LimelightHelpers.getBotPoseEstimate(Constants.LIMELIGHT_NAME,"",false).pose;
 
         //Move with desired position based on april tag ID difference with current position in relation to april tag
-        
-        LimelightResults results = LimelightHelpers.getLatestResults("");
+
+        LimelightResults results = LimelightHelpers.getLatestResults(Constants.LIMELIGHT_NAME);
 
         Pose3d desiredPosition = LimelightHelpers.getTargetPose3d_RobotSpace(null);
-        //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+        //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LIMELIGHT_NAME);
         double distanceToTarget = LimelightHelpers.getBotPoseEstimate_wpiBlue("").rawFiducials[0].distToRobot;
-        
-        
 
-        double offsetSideways = LimelightHelpers.getTX("");
-        double offsetForward = LimelightHelpers.getTY("");
-        LimelightHelpers.getRawFiducials(AUTO_MODE_KEY);
+        double offsetSideways = LimelightHelpers.getTX(Constants.LIMELIGHT_NAME);
+        double offsetForward = LimelightHelpers.getTY(Constants.LIMELIGHT_NAME);
+        LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
 
     }
 }

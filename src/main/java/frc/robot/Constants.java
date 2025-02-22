@@ -16,4 +16,7 @@ public final class Constants {
 
     public static final int ALGAE_CONTACT_SWITCH_CHANNEL = 0;
     public static final int CORAL_CONTACT_SWITCH_CHANNEL = 1;
+
+    //Limelight
+    public static final String LIMELIGHT_NAME = "";
 }
