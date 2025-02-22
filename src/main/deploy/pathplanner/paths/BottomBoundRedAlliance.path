@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 9.552255794701985,
-        "y": 2.041908112582781
+        "x": 9.581312086092716,
+        "y": 2.673882450331125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.302255794701985,
-        "y": 2.041908112582781
+        "x": 9.331573298233053,
+        "y": 2.6624571346511727
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 12.559581953642384,
-        "y": 2.848220198675497
+        "y": 2.8627483443708592
       },
       "prevControl": {
-        "x": 12.774295112663763,
-        "y": 2.7201645102307395
+        "x": 12.893902285765302,
+        "y": 2.6883688086261897
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 57.69099794323032
   },
   "reversed": false,
   "folder": "RedAlliancePaths",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 1.709814044141505
+    "velocity": 0.0,
+    "rotation": 0.4556148217160829
   },
   "useDefaultConstraints": true
 }

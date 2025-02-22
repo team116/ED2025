@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.96868791390814,
-        "y": 2.065
+        "x": 1.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.680965909090909,
-        "y": 2.3647301136363637
+        "x": 1.2532656810757203,
+        "y": 6.765183277619349
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.0,
-        "y": 2.827
+        "x": 2.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 5.214713159021378,
-        "y": 2.6989443115552425
+        "x": 1.7441759322597086,
+        "y": 6.248153999665849
+      },
+      "nextControl": {
+        "x": 2.270413307230318,
+        "y": 5.73769417262102
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0,
+        "y": 5.0
+      },
+      "prevControl": {
+        "x": 2.7241198686274886,
+        "y": 5.283917230648539
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +57,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 120.14931036472957
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "BlueAlliancePaths",
+  "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -178.78112476486862
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

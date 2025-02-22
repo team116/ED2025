@@ -34,8 +34,9 @@ import java.util.*;
 
 public class RobotContainer {
 
-    private static final List<String> Auto_Running_Name = new ArrayList<String>(Arrays.asList("TopBoundBlueAlliance","CenterBoundBlueAlliance",
-            "BottomBoundBlueAlliance","TopBoundRedAlliance","CenterBoundRedAlliance","BottomBoundRedAlliance"));
+    private static final List<String> DEFAULT_AUTO_RUNNING_NAMES = List.of("TopBoundBlueAlliance","CenterBoundBlueAlliance",
+            "BottomBoundBlueAlliance","TopBoundRedAlliance","CenterBoundRedAlliance","BottomBoundRedAlliance",
+            "DriveForwardAuto", "DriveSidewaysAuto", "DriveForwardAndSidewaysAuto");
 
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
@@ -85,7 +86,7 @@ public class RobotContainer {
         }
 
         if (drivetrain instanceof CommandSwerveDrivetrainPathPlanner) {
-            autoChooserPathPlanner = AutoBuilder.buildAutoChooser(Auto_Running_Name.get(0)); // Index from original list for given autonomous that we want to execute
+            autoChooserPathPlanner = AutoBuilder.buildAutoChooser(DEFAULT_AUTO_RUNNING_NAMES.get(6)); // Index from original list for given autonomous that we want to execute
             SmartDashboard.putData("Auto Mode", autoChooserPathPlanner);
         }
 
