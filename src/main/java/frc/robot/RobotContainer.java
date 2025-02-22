@@ -43,6 +43,9 @@ public class RobotContainer {
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -53,6 +56,11 @@ public class RobotContainer {
     private boolean slowModeActive = false;
 
     private boolean superSlowModeActive = false;
+
+    public static final String SPEED_MODE_KEY = "Speed";
+    public static final String FAST_MODE = "Fast";
+    public static final String SLOW_MODE = "Slow";
+    public static final String CRAWL_MODE = "Crawl";
 
     /* Path follower */
     //private final AutoFactory autoFactoryChoreo;
@@ -112,6 +120,17 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        // Toggle robot-centric control
+        joystick.rightBumper().toggleOnTrue(drivetrain.applyRequest(() ->
+            driveRobotCentric
+                .withVelocityX(shape(-joystick.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(shape(-joystick.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(shape(-joystick.getRightX()) * MaxAngularRate)
+            )
+        );
+
+        joystick.rightBumper().toggleOnTrue(new RobotCentricDashboardCommand());
+
         drivetrain.registerTelemetry(logger::telemeterize);
 
         joystick.x().onTrue(new InstantCommand(() -> toggleSlowMode()));
@@ -145,24 +164,26 @@ public class RobotContainer {
 
     public void toggleSlowMode() {
         slowModeActive = !slowModeActive;
-        if(superSlowModeActive)
+        if (superSlowModeActive) {
             superSlowModeActive = false;
-        // return drivetrain.applyRequest(() ->
-        //     drive.withVelocityX(shape(-joystick.getLeftY())/2 * MaxSpeed) // Drive forward with negative Y (forward)
-        //         .withVelocityY(shape(-joystick.getLeftX())/2 * MaxSpeed) // Drive left with negative X (left)
-        //         .withRotationalRate(shape(-joystick.getRightX())/2 * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        // );
+        }
+        if (slowModeActive) {
+            SmartDashboard.putString(SPEED_MODE_KEY, SLOW_MODE);
+        } else {
+            SmartDashboard.putString(SPEED_MODE_KEY, FAST_MODE);
+        }
     }
 
     public void toggleSuperSlowMode() {
         superSlowModeActive = !superSlowModeActive;
-        if(slowModeActive)
+        if (slowModeActive) {
             slowModeActive = false;
-        // return drivetrain.applyRequest(() ->
-        // drive.withVelocityX(shape(-joystick.getLeftY())/4 * MaxSpeed) // Drive forward with negative Y (forward)
-        //     .withVelocityY(shape(-joystick.getLeftX())/4 * MaxSpeed) // Drive left with negative X (left)
-        //     .withRotationalRate(shape(-joystick.getRightX())/4 * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        // );
+        }
+        if (superSlowModeActive) {
+            SmartDashboard.putString(SPEED_MODE_KEY, CRAWL_MODE);
+        } else {
+            SmartDashboard.putString(SPEED_MODE_KEY, FAST_MODE);
+        }
     }
 
     public void alignToAprilTag(int targetAprilTag) {

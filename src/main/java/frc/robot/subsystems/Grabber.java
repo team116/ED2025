@@ -90,6 +90,10 @@ public class Grabber implements Subsystem {
                 .forwardLimitSwitchEnabled(false)  // FIXME: Both of these should be true once wired up
                 .reverseLimitSwitchEnabled(false);
 
+            // FIXME: Might want this to be a factor to change outputs to angles
+            //wristMotorConfig.encoder
+            //    .positionConversionFactor(1.0d);
+
             wristMotor.configure(wristMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
             wristMotorEncoder = wristMotor.getEncoder();
             this.wristMotor = wristMotor;
