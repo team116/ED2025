@@ -20,6 +20,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -77,6 +78,7 @@ public class RobotContainer {
             AutoRoutinesChoreo autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo);
 
             autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
+            autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueEasy);
             SmartDashboard.putData("Auto Chooser", autoChooserChoreo);
         }
 
@@ -96,7 +98,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(shape(-joystick.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(shape(-joystick.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(shape(-joystick.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(shapeRotation(-joystick.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -127,7 +129,7 @@ public class RobotContainer {
             driveRobotCentric
                 .withVelocityX(shape(-joystick.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
                 .withVelocityY(shape(-joystick.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(shape(-joystick.getRightX()) * MaxAngularRate)
+                .withRotationalRate(shapeRotation(-joystick.getRightX()) * MaxAngularRate)
             )
         );
 
@@ -156,9 +158,19 @@ public class RobotContainer {
 
     public double shape(double initial) {
         if(slowModeActive) {
-            return (initial * Math.abs(initial))/2;
+            return (initial * Math.abs(initial)) * 0.75d;
         } else if(superSlowModeActive) {
-            return (initial * Math.abs(initial))/4;
+            return (initial * initial * initial) * 0.50d;
+        } else {
+           return initial * Math.abs(initial);
+        }
+    }
+
+    public double shapeRotation(double initial) {
+        if(slowModeActive) {
+            return (initial * Math.abs(initial));
+        } else if(superSlowModeActive) {
+            return (initial * initial * initial);
         } else {
            return initial * Math.abs(initial);
         }
