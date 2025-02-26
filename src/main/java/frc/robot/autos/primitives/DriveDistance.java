@@ -4,10 +4,13 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.revrobotics.spark.config.SmartMotionConfig;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -16,9 +19,14 @@ public class DriveDistance extends DurationCommand {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
     private final double distance;
     private final Direction direction;
+    private final boolean[] reachedPositionForModule;
+    private final double xDirectionVelocity;
+    private final double yDirectionVelocity;
+    private final SwerveRequest.RobotCentric driveDirection = new SwerveRequest.RobotCentric()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private static final double WORST_CASE_METERS_PER_SECOND = Units.Inches.toBaseUnits(8.0d);
     private static final double METERS_AWAY_FROM_DESIRED_THRESHOLD = 0.05;
-    private static final double SPEED_METERS_PER_SECOND = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) * 0.3d;  // 30% max speed
+    private static final double SPEED_METERS_PER_SECOND = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) * 0.1d;  // 30% max speed
 
     public enum Direction {
         FORWARD(1.0d, 0.0d),
@@ -58,39 +66,61 @@ public class DriveDistance extends DurationCommand {
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
         this.distance = units.toBaseUnits(distance);
         this.direction = direction;
+        this.reachedPositionForModule = new boolean[commandSwerveDrivetrain.getModules().length];
 
-        addRequirements(commandSwerveDrivetrain);
+        this.xDirectionVelocity = direction.xRatio * SPEED_METERS_PER_SECOND;
+        this.yDirectionVelocity = direction.yRatio * SPEED_METERS_PER_SECOND;
+
+        // FIXME: Believe that this should be handled by getActualDrivetrainCommand() command
+        //addRequirements(commandSwerveDrivetrain);
+    }
+
+    public Command getActualDrivetrainCommand() {
+        return commandSwerveDrivetrain.applyRequest(() -> driveDirection
+            .withVelocityX(xDirectionVelocity)
+            .withVelocityY(yDirectionVelocity)
+            .withRotationalRate(0.0d));
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        int moduleNum = 0;
         for (SwerveModule swerveModule : commandSwerveDrivetrain.getModules()) {
             swerveModule.resetPosition();
+            SmartDashboard.putNumber("initialDistance" + moduleNum, swerveModule.getPosition(true).distanceMeters);
+            reachedPositionForModule[moduleNum++] = false;
         }
-        //swerve.resetDriveEncoders();
 
-        // FIXME: Determine x and y velocity based upon angle direction
-        double xDirectionVelocity = direction.xRatio * SPEED_METERS_PER_SECOND;
-        double yDirectionVelocity = direction.yRatio * SPEED_METERS_PER_SECOND;
-
-        commandSwerveDrivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-            .withVelocityX(xDirectionVelocity)
-            .withVelocityY(yDirectionVelocity)
-            .withRotationalRate(0.0d)
-        );
-        //swerve.runToPositionInMeters(distance, pidSlot);
+        SmartDashboard.putNumber("desiredDistance", distance);
+        SmartDashboard.putNumber("xVelocity", xDirectionVelocity);
+        SmartDashboard.putNumber("yVelocity", yDirectionVelocity);
+        SmartDashboard.putBooleanArray("modulesAtPosition", reachedPositionForModule);
     }
 
     @Override
     public void execute() {
         super.execute();
+
+        int moduleNum = 0;
+        for (SwerveModule swerveModule : commandSwerveDrivetrain.getModules()) {
+            double currentDistance = swerveModule.getPosition(true).distanceMeters;
+
+            SmartDashboard.putNumber("currentDistance" + moduleNum, currentDistance);
+            if (Math.abs(currentDistance - distance) < METERS_AWAY_FROM_DESIRED_THRESHOLD) {
+                reachedPositionForModule[moduleNum] = true;
+            }
+
+            ++moduleNum;
+        }
+
+        SmartDashboard.putBooleanArray("modulesAtPosition", reachedPositionForModule);
+        SmartDashboard.putString("runState", "EXEC");
     }
 
     @Override
     public void end(boolean interrupted) {
-        commandSwerveDrivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+        SmartDashboard.putString("runState", "END");
         super.end(interrupted);
     }
 
@@ -103,18 +133,19 @@ public class DriveDistance extends DurationCommand {
     private boolean allAtFinalPositions() {
         // NOTE: This implemenation is NOT using run to position, so this could fail easily :-(
         // FIXME: See if we can do a run to position using the phoenix stuff
-        for (SwerveModule swerveModule : commandSwerveDrivetrain.getModules()) {
-            double currentDistance = swerveModule.getCachedPosition().distanceMeters;
-            if (Math.abs(currentDistance - distance) > METERS_AWAY_FROM_DESIRED_THRESHOLD) {
-                return false;
-            }
+        boolean foundAllPositions = true;
+        for (boolean moduleAtPosition : reachedPositionForModule) {
+            foundAllPositions &= moduleAtPosition;
         }
  
-        return true;
+        SmartDashboard.putBoolean("atFinalPositions", foundAllPositions);
+        return foundAllPositions;
     }
 
     private static double deriveMaxTimeoutFromDistance(double distance, DistanceUnit units) {
         // NOTE: All times should be non-negative
-        return Math.abs(units.toBaseUnits(distance) / WORST_CASE_METERS_PER_SECOND);
+        //return Math.abs(units.toBaseUnits(distance) / WORST_CASE_METERS_PER_SECOND);
+        // FIXME: Just to rule this out
+        return 2.0;
     }
 }
