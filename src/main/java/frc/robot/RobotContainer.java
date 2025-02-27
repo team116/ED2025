@@ -12,20 +12,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.autos.primitives.DriveDistance;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
@@ -201,21 +195,33 @@ public class RobotContainer {
     }
 
     public void alignToAprilTag() {
-        double targetAprilTag = LimelightHelpers.getFiducialID(Constants.LIMELIGHT_NAME);
-        //LimelightHelpers.setPriorityTagID("", (int)targetAprilTag);
-        //Pose2d position = LimelightHelpers.getBotPoseEstimate(Constants.LIMELIGHT_NAME,"",false).pose;
-
-        //Move with desired position based on april tag ID difference with current position in relation to april tag
-
-        LimelightResults results = LimelightHelpers.getLatestResults(Constants.LIMELIGHT_NAME);
-
-        Pose3d desiredPosition = LimelightHelpers.getTargetPose3d_RobotSpace(null);
-        //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LIMELIGHT_NAME);
-        double distanceToTarget = LimelightHelpers.getBotPoseEstimate_wpiBlue("").rawFiducials[0].distToRobot;
-
+        double center = 0; //center of the tx values
         double offsetSideways = LimelightHelpers.getTX(Constants.LIMELIGHT_NAME);
-        double offsetForward = LimelightHelpers.getTY(Constants.LIMELIGHT_NAME);
-        LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
+        DriveDistance.Direction direction;
+
+        if (offsetSideways > center) {
+            direction = DriveDistance.Direction.RIGHT;
+        } else {
+            direction = DriveDistance.Direction.LEFT;
+        }
+        
+        DriveDistance move = new DriveDistance(drivetrain, direction, offsetSideways, Inches);
+        
+        // double targetAprilTag = LimelightHelpers.getFiducialID(Constants.LIMELIGHT_NAME);
+        // //LimelightHelpers.setPriorityTagID("", (int)targetAprilTag);
+        // //Pose2d position = LimelightHelpers.getBotPoseEstimate(Constants.LIMELIGHT_NAME,"",false).pose;
+
+        // //Move with desired position based on april tag ID difference with current position in relation to april tag
+
+        // LimelightResults results = LimelightHelpers.getLatestResults(Constants.LIMELIGHT_NAME);
+
+        // Pose3d desiredPosition = LimelightHelpers.getTargetPose3d_RobotSpace(null);
+        // //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LIMELIGHT_NAME);
+        // double distanceToTarget = LimelightHelpers.getBotPoseEstimate_wpiBlue("").rawFiducials[0].distToRobot;
+
+        
+        // double offsetForward = LimelightHelpers.getTY(Constants.LIMELIGHT_NAME);
+        // LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
 
     }
 }
