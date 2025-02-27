@@ -16,16 +16,18 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class DriveDistance extends DurationCommand {
 
+    private boolean foundAllPositions;
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
-    private final double distance;
+    private final double distanceInMeters;
     private final Direction direction;
     private final boolean[] reachedPositionForModule;
+    private final double[] initialPositionsInMeters;
     private final double xDirectionVelocity;
     private final double yDirectionVelocity;
     private final SwerveRequest.RobotCentric driveDirection = new SwerveRequest.RobotCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private static final double WORST_CASE_METERS_PER_SECOND = Units.Inches.toBaseUnits(8.0d);
-    private static final double METERS_AWAY_FROM_DESIRED_THRESHOLD = 0.05;
+    private static final double METERS_AWAY_FROM_DESIRED_THRESHOLD = 0.0075; // Third of an inch
     private static final double SPEED_METERS_PER_SECOND = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) * 0.1d;  // 30% max speed
 
     public enum Direction {
@@ -64,9 +66,11 @@ public class DriveDistance extends DurationCommand {
     public DriveDistance(CommandSwerveDrivetrain commandSwerveDrivetrain, Direction direction, double distance, DistanceUnit units) {
         super(deriveMaxTimeoutFromDistance(distance, units));
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
-        this.distance = units.toBaseUnits(distance);
+        this.distanceInMeters = units.toBaseUnits(distance);
         this.direction = direction;
-        this.reachedPositionForModule = new boolean[commandSwerveDrivetrain.getModules().length];
+        int numModules = commandSwerveDrivetrain.getModules().length;
+        this.reachedPositionForModule = new boolean[numModules];
+        this.initialPositionsInMeters = new double[numModules];
 
         this.xDirectionVelocity = direction.xRatio * SPEED_METERS_PER_SECOND;
         this.yDirectionVelocity = direction.yRatio * SPEED_METERS_PER_SECOND;
@@ -76,10 +80,14 @@ public class DriveDistance extends DurationCommand {
     }
 
     public Command getActualDrivetrainCommand() {
+        // return commandSwerveDrivetrain.applyRequest(() -> driveDirection
+        //     .withVelocityX(xDirectionVelocity)
+        //     .withVelocityY(yDirectionVelocity)
+        //     .withRotationalRate(0.0d));
         return commandSwerveDrivetrain.applyRequest(() -> driveDirection
-            .withVelocityX(xDirectionVelocity)
-            .withVelocityY(yDirectionVelocity)
-            .withRotationalRate(0.0d));
+             .withVelocityX(xDirectionVelocity)
+             .withVelocityY(yDirectionVelocity)
+             .withRotationalRate(0.0d));
     }
 
     @Override
@@ -87,12 +95,17 @@ public class DriveDistance extends DurationCommand {
         super.initialize();
         int moduleNum = 0;
         for (SwerveModule swerveModule : commandSwerveDrivetrain.getModules()) {
-            swerveModule.resetPosition();
-            SmartDashboard.putNumber("initialDistance" + moduleNum, swerveModule.getPosition(true).distanceMeters);
-            reachedPositionForModule[moduleNum++] = false;
+            //swerveModule.resetPosition(); // NOTE: This seems to _NOT_ reset, so store original values to subtract
+            double initialPositionInMeters = swerveModule.getPosition(true).distanceMeters;
+            SmartDashboard.putNumber("initialDistance" + moduleNum, initialPositionInMeters);
+            reachedPositionForModule[moduleNum] = false;
+            initialPositionsInMeters[moduleNum] = initialPositionInMeters;
+            ++moduleNum;
         }
 
-        SmartDashboard.putNumber("desiredDistance", distance);
+        foundAllPositions = false;
+
+        SmartDashboard.putNumber("desiredDistance", distanceInMeters);
         SmartDashboard.putNumber("xVelocity", xDirectionVelocity);
         SmartDashboard.putNumber("yVelocity", yDirectionVelocity);
         SmartDashboard.putBooleanArray("modulesAtPosition", reachedPositionForModule);
@@ -104,22 +117,29 @@ public class DriveDistance extends DurationCommand {
 
         int moduleNum = 0;
         for (SwerveModule swerveModule : commandSwerveDrivetrain.getModules()) {
-            double currentDistance = swerveModule.getPosition(true).distanceMeters;
-
-            SmartDashboard.putNumber("currentDistance" + moduleNum, currentDistance);
-            if (Math.abs(currentDistance - distance) < METERS_AWAY_FROM_DESIRED_THRESHOLD) {
-                reachedPositionForModule[moduleNum] = true;
+            // NOTE: Only read values for modules that haven't been "found" yet
+            if (!reachedPositionForModule[moduleNum]) {
+                //double rawCurrentDistance = swerveModule.getPosition(false).distanceMeters;
+                double rawCurrentDistance = swerveModule.getCachedPosition().distanceMeters;
+                double currentDistanceInMeters = Math.abs(rawCurrentDistance - initialPositionsInMeters[moduleNum]);
+                //SmartDashboard.putNumber("rawDistance" + moduleNum, rawCurrentDistance);
+                //SmartDashboard.putNumber("currentDistance" + moduleNum, currentDistanceInMeters);  // NOTE: Only for testing
+                double difference = Math.abs(currentDistanceInMeters - distanceInMeters);
+                if (difference < METERS_AWAY_FROM_DESIRED_THRESHOLD) {
+                    reachedPositionForModule[moduleNum] = true;
+                }    
             }
 
             ++moduleNum;
         }
 
-        SmartDashboard.putBooleanArray("modulesAtPosition", reachedPositionForModule);
-        SmartDashboard.putString("runState", "EXEC");
+        //SmartDashboard.putBooleanArray("modulesAtPosition", reachedPositionForModule);
+        //SmartDashboard.putString("runState", "EXEC");
     }
 
     @Override
     public void end(boolean interrupted) {
+        SmartDashboard.putBoolean("atFinalPositions", foundAllPositions);
         SmartDashboard.putString("runState", "END");
         super.end(interrupted);
     }
@@ -133,19 +153,24 @@ public class DriveDistance extends DurationCommand {
     private boolean allAtFinalPositions() {
         // NOTE: This implemenation is NOT using run to position, so this could fail easily :-(
         // FIXME: See if we can do a run to position using the phoenix stuff
-        boolean foundAllPositions = true;
+        boolean tempFoundAllPositions = true;
         for (boolean moduleAtPosition : reachedPositionForModule) {
-            foundAllPositions &= moduleAtPosition;
+            if (!moduleAtPosition) {
+                tempFoundAllPositions = false;
+                break;
+            }
         }
  
-        SmartDashboard.putBoolean("atFinalPositions", foundAllPositions);
+        if (tempFoundAllPositions) {
+            foundAllPositions = true;
+        }
+
         return foundAllPositions;
     }
 
     private static double deriveMaxTimeoutFromDistance(double distance, DistanceUnit units) {
-        // NOTE: All times should be non-negative
-        //return Math.abs(units.toBaseUnits(distance) / WORST_CASE_METERS_PER_SECOND);
-        // FIXME: Just to rule this out
-        return 2.0;
+        double maxTimeout = Math.abs(units.toBaseUnits(distance) / WORST_CASE_METERS_PER_SECOND);
+        SmartDashboard.putNumber("maxTimeout", maxTimeout);
+        return maxTimeout;
     }
 }
