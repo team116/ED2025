@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.autos.primitives.DriveDistance;
 import frc.robot.autos.primitives.DriveDistanceGah;
 import frc.robot.generated.TunerConstants;
@@ -222,7 +223,11 @@ public class RobotContainer {
 
         double offsetSideways = LimelightHelpers.getTX(Constants.LIMELIGHT_NAME);
         double offsetForward = LimelightHelpers.getTY(Constants.LIMELIGHT_NAME);
-        LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
+        RawFiducial[] stats = LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
+        double distance = 0;
+        if (((((((((stats.length > 0))))))))) {
+            double distance = stats[0].distToCamera;
+        }
 
     }
 }
