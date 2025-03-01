@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,11 +29,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.autos.primitives.MonitorDistanceDriven;
+import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.autos.DriveOffTheLine;
 import frc.robot.autos.ScoreTroughCenter;
 import frc.robot.autos.primitives.DriveDirection;
 import frc.robot.autos.primitives.DriveDistance;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
 import frc.robot.subsystems.CommandSwerveDrivetrainPathPlanner;
@@ -41,6 +44,7 @@ import frc.robot.subsystems.Grabber;
 
 public class RobotContainer {
     private static final boolean USE_MANUAL_AUTO_ROUTINES = false;
+    private static final boolean GUNNER_CONTROLS_CONNECTED = true;
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = (RotationsPerSecond.of(0.75).in(RadiansPerSecond)) / 2.0d; // 3/4 of a rotation per second max angular velocity
@@ -59,11 +63,14 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController driverController = new CommandXboxController(0);
+    private final Joystick gunnerStation;
+    private final Joystick gunnerLogitech;
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
     public final Grabber grabber = new Grabber();
+    public final Climber climber = new Climber();
 
     private boolean slowModeActive = false;
 
@@ -109,6 +116,12 @@ public class RobotContainer {
         SmartDashboard.putNumber("MaxSpeed", MaxSpeed);
 
         configureBindings();
+
+        if (GUNNER_CONTROLS_CONNECTED) {
+            gunnerStation = new Joystick(1);
+            gunnerLogitech = new Joystick(2);
+            configureGunnerBindings();
+        }
     }
 
     private void configureBindings() {
@@ -117,53 +130,58 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(shape(-joystick.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(shape(-joystick.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(shapeRotation(-joystick.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(shape(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(shape(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(shapeRotation(-driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driverController.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
         ));
 
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+        driverController.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
-        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        driverController.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
-        joystick.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
-        joystick.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
+        driverController.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
+        driverController.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // Toggle robot-centric control
-        joystick.rightBumper().toggleOnTrue(drivetrain.applyRequest(() ->
+        driverController.rightBumper().toggleOnTrue(drivetrain.applyRequest(() ->
             driveRobotCentric
-                .withVelocityX(shape(-joystick.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(shape(-joystick.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(shapeRotation(-joystick.getRightX()) * MaxAngularRate)
+                .withVelocityX(shape(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(shape(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(shapeRotation(-driverController.getRightX()) * MaxAngularRate)
             )
         );
 
-        joystick.rightBumper().toggleOnTrue(new RobotCentricDashboardCommand());
+        driverController.rightBumper().toggleOnTrue(new RobotCentricDashboardCommand());
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.x().onTrue(new InstantCommand(() -> toggleSlowMode()));
-        joystick.y().onTrue(new InstantCommand(() -> toggleSuperSlowMode()));
+        driverController.x().onTrue(new InstantCommand(() -> toggleSlowMode()));
+        driverController.y().onTrue(new InstantCommand(() -> toggleSuperSlowMode()));
 
-        //joystick.rightBumper().onTrue(new InstantCommand(() -> alignToAprilTag()));
+        //driverController.rightBumper().onTrue(new InstantCommand(() -> alignToAprilTag()));
+    }
+
+    private void configureGunnerBindings() {
+        elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, gunnerLogitech));
+        // FIXME: Add default commands to grabber (wrist and intake) and climber
     }
 
     public Command getAutonomousCommand() {
