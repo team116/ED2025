@@ -143,6 +143,8 @@ public class RobotContainer {
 
         joystick.rightBumper().toggleOnTrue(new RobotCentricDashboardCommand());
 
+        joystick.rightTrigger().onTrue(new InstantCommand(() -> alignToAprilTag()));
+
         drivetrain.registerTelemetry(logger::telemeterize);
 
         joystick.x().onTrue(new InstantCommand(() -> toggleSlowMode()));
@@ -209,25 +211,24 @@ public class RobotContainer {
     }
 
     public void alignToAprilTag() {
-        double targetAprilTag = LimelightHelpers.getFiducialID(Constants.LIMELIGHT_NAME);
-        //LimelightHelpers.setPriorityTagID("", (int)targetAprilTag);
-        //Pose2d position = LimelightHelpers.getBotPoseEstimate(Constants.LIMELIGHT_NAME,"",false).pose;
-
-        //Move with desired position based on april tag ID difference with current position in relation to april tag
-
-        LimelightResults results = LimelightHelpers.getLatestResults(Constants.LIMELIGHT_NAME);
-
-        Pose3d desiredPosition = LimelightHelpers.getTargetPose3d_RobotSpace(null);
-        //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LIMELIGHT_NAME);
-        double distanceToTarget = LimelightHelpers.getBotPoseEstimate_wpiBlue("").rawFiducials[0].distToRobot;
-
+        
         double offsetSideways = LimelightHelpers.getTX(Constants.LIMELIGHT_NAME);
         double offsetForward = LimelightHelpers.getTY(Constants.LIMELIGHT_NAME);
+        double tagSize = LimelightHelpers.getTA(Constants.LIMELIGHT_NAME); 
+        
         RawFiducial[] stats = LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
+        //distance in mystery units? maybe they were listed and i forgot
         double distance = 0;
-        if (((((((((stats.length > 0))))))))) {
-            double distance = stats[0].distToCamera;
+        double distanceFromArea = getDistanceFromAprilTagInches();
+        
+        if (stats.length > 0) {
+            distance = stats[0].distToCamera;
         }
 
     }
+    //formula for robot distance from april tag in inches from 2024, needs to be straight on to be most accurate, unsure whether it still works for 2025
+    public double getDistanceFromAprilTagInches() {
+        return (185.267402 * Math.pow(LimelightHelpers.getTA(Constants.LIMELIGHT_NAME), -0.4997426126));
+    }
 }
+
