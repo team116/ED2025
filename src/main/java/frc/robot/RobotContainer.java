@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
@@ -40,11 +41,12 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
 import frc.robot.subsystems.CommandSwerveDrivetrainPathPlanner;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
     private static final boolean USE_MANUAL_AUTO_ROUTINES = false;
-    private static final boolean GUNNER_CONTROLS_CONNECTED = true;
+    private static final boolean GUNNER_CONTROLS_CONNECTED = false;
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = (RotationsPerSecond.of(0.75).in(RadiansPerSecond)) / 2.0d; // 3/4 of a rotation per second max angular velocity
@@ -64,13 +66,21 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController driverController = new CommandXboxController(0);
-    private final Joystick gunnerStation;
+    private final Joystick gunnerPad;
     private final Joystick gunnerLogitech;
+
+    private final JoystickButton wristUpButton;
+    private final JoystickButton wristDownButton;
+    private final JoystickButton intakeConsumeButton;
+    private final JoystickButton intakeExpelButton;
+    private final JoystickButton climberUpButton;
+    private final JoystickButton climberDownButton;
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
-    public final Grabber grabber = new Grabber();
     public final Climber climber = new Climber();
+    public final Intake intake = new Intake();
+    public final Wrist wrist = new Wrist();
 
     private boolean slowModeActive = false;
 
@@ -109,7 +119,7 @@ public class RobotContainer {
         if (USE_MANUAL_AUTO_ROUTINES) {
             autoManual = new SendableChooser<>();
             autoManual.addOption("Drive Off The Line", new DriveOffTheLine(drivetrain));
-            autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, null, null));
+            autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, elevator, intake, wrist));
             SmartDashboard.putData("Auto Manual", autoManual);
         }
 
@@ -118,9 +128,24 @@ public class RobotContainer {
         configureBindings();
 
         if (GUNNER_CONTROLS_CONNECTED) {
-            gunnerStation = new Joystick(1);
+            gunnerPad = new Joystick(1);
             gunnerLogitech = new Joystick(2);
+            wristUpButton = new JoystickButton(gunnerLogitech, 9);
+            wristDownButton = new JoystickButton(gunnerLogitech, 10);
+            intakeConsumeButton = new JoystickButton(gunnerLogitech, 5);
+            intakeExpelButton = new JoystickButton(gunnerLogitech, 6);
+            climberUpButton = new JoystickButton(gunnerLogitech, 8);
+            climberDownButton = new JoystickButton(gunnerLogitech, 7);
             configureGunnerBindings();
+        } else {
+            gunnerPad = null;
+            gunnerLogitech = null;
+            wristUpButton = null;
+            wristDownButton = null;
+            intakeConsumeButton = null;
+            intakeExpelButton = null;
+            climberUpButton = null;
+            climberDownButton = null;
         }
     }
 
@@ -181,7 +206,13 @@ public class RobotContainer {
 
     private void configureGunnerBindings() {
         elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, gunnerLogitech));
-        // FIXME: Add default commands to grabber (wrist and intake) and climber
+
+        wristUpButton.onTrue(wrist.startEnd(() -> wrist.up(), () -> wrist.stop()));
+        wristDownButton.onTrue(wrist.startEnd(() -> wrist.down(), () -> wrist.stop()));
+        climberUpButton.onTrue(climber.startEnd(() -> climber.pullUpSlow(), () -> climber.stop()));
+        climberDownButton.onTrue(climber.startEnd(() -> climber.dropDownSlow(), () -> climber.stop()));
+        intakeConsumeButton.onTrue(intake.startEnd(() -> intake.consume(), () -> intake.stop()));
+        intakeExpelButton.onTrue(intake.startEnd(() -> intake.expel(), () -> intake.stop()));
     }
 
     public Command getAutonomousCommand() {

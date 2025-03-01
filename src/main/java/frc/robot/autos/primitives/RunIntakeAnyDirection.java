@@ -1,32 +1,32 @@
 package frc.robot.autos.primitives;
 
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Intake;
 
-public class RunGrabberIntakeAnyDirection extends DurationCommand {
+public class RunIntakeAnyDirection extends DurationCommand {
 
     public enum IntakeDirection {
         CONSUME,
         EXPEL
     }
 
-    private final Grabber grabber;
+    private final Intake intake;
     private final IntakeDirection direction;
 
-    public RunGrabberIntakeAnyDirection(Grabber grabber, double maxTimeout, IntakeDirection direction) {
+    public RunIntakeAnyDirection(Intake intake, double maxTimeout, IntakeDirection direction) {
         super(maxTimeout);
-        this.grabber = grabber;
+        this.intake = intake;
         this.direction = direction;
 
-        addRequirements(grabber);
+        addRequirements(intake);
     }
 
     @Override
     public void initialize() {
         super.initialize();
         if (direction == IntakeDirection.CONSUME) {
-            grabber.runIntakeMotorsToConsume();
+            intake.consume();
         } else {
-            grabber.runIntakeMotorsToExpel();
+            intake.expel();
         } 
     }
 
@@ -37,7 +37,7 @@ public class RunGrabberIntakeAnyDirection extends DurationCommand {
 
     @Override
     public void end(boolean interrupted) {
-        grabber.stopIntakeMotors();
+        intake.stop();
         super.end(interrupted);
     }
 

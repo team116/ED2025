@@ -10,16 +10,17 @@ import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToAbsoluteEncoderAngle;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Wrist;
 
 public class ScoreTroughCenter extends SequentialCommandGroup {
     
-    public ScoreTroughCenter(CommandSwerveDrivetrain commandSwerveDrivetrain, Elevator elevator, Grabber grabber) {
+    public ScoreTroughCenter(CommandSwerveDrivetrain commandSwerveDrivetrain, Elevator elevator, Intake intake, Wrist wrist) {
 
         DriveDistance driveForward = new DriveDistance(commandSwerveDrivetrain, DriveDirection.FORWARD, 48, Units.Inches);
         SendElevatorToPositionCommand elevatorUp = new SendElevatorToPositionCommand(elevator, 3.0, 176.0);
-        SendWristToAbsoluteEncoderAngle wristOutStraight = new SendWristToAbsoluteEncoderAngle(grabber, 2.0, 0.0);
-        ExpelGamePieceCommand coralToTrough = new ExpelGamePieceCommand(grabber, 2.0d);
+        SendWristToAbsoluteEncoderAngle wristOutStraight = new SendWristToAbsoluteEncoderAngle(wrist, 2.0, 0.0);
+        ExpelGamePieceCommand coralToTrough = new ExpelGamePieceCommand(intake, 2.0d);
         
         addCommands(Commands.sequence(
             wristOutStraight,

@@ -36,7 +36,11 @@ All REVLib (?? or is there a CANCoder or other type of abs encoder ??)
 - CAN Coder CAN ID: 58
 - 2 max ranges limit switches (safety)
  */
-public class Grabber implements Subsystem {
+// DO _NOT_ attempt to use this class, as wrist and intake cannot be utilized independently
+@Deprecated
+class Grabber implements Subsystem {
+    // Go Use Intake and Wrist classes directly!!!
+/*
     private final MotorController leftIntakeMotor;
     private final MotorController rightIntakeMotor;
 
@@ -157,4 +161,5 @@ public class Grabber implements Subsystem {
     public boolean coralLimitSwitchIsPressed() {
         return coralContactLimitSwitch.get();
     }
+*/
 }

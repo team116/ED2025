@@ -63,6 +63,15 @@ public class Climber implements Subsystem {
         setMotorPower(0.5);
     }
 
+
+    public void dropDown() {
+        setMotorPower(-1.0);
+    }
+
+    public void dropDownSlow() {
+        setMotorPower(-0.5);
+    }
+
     public void stop() {
         climberMotor.stopMotor();
     }

@@ -1,11 +1,11 @@
 package frc.robot.autos.primitives;
 
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Wrist;
 
 public class SendWristToAbsoluteEncoderAngle extends DurationCommand {
     
     // FIXME: Actually move write to position based upon relative 
-    private final Grabber grabber;
+    private final Wrist wrist;
     private final double desiredWristAngle;
     private boolean atDesiredAngle;
 
@@ -13,9 +13,9 @@ public class SendWristToAbsoluteEncoderAngle extends DurationCommand {
 
     private static final double EPSILON = 0.01;  // FIXME: What kind of slack will we accept for "at desired position"
 
-    public SendWristToAbsoluteEncoderAngle(Grabber grabber, double maxTimeout, double angle) {
+    public SendWristToAbsoluteEncoderAngle(Wrist wrist, double maxTimeout, double angle) {
         super(maxTimeout);
-        this.grabber = grabber;
+        this.wrist = wrist;
         this.desiredWristAngle = angle + ZERO_ANGLE_OFFSET;
     }
 
@@ -29,25 +29,25 @@ public class SendWristToAbsoluteEncoderAngle extends DurationCommand {
     public void execute() {
         super.execute();
 
-        double currentWristPosition = grabber.getWristAbsoluteAngle();
+        double currentWristPosition = wrist.getAbsoluteAngle();
         double diff = desiredWristAngle - currentWristPosition;
 
         double absDiff = Math.abs(diff);
         if (absDiff < EPSILON) {
-            grabber.stopWristMotors();
+            wrist.stop();
             atDesiredAngle = true;
         } else {
             if (diff < 0) {
-                grabber.wristUp();
+                wrist.up();
             } else {
-                grabber.wristDown();
+                wrist.down();
             }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        grabber.stopWristMotors();
+        wrist.stop();
         super.end(interrupted);
     }
 

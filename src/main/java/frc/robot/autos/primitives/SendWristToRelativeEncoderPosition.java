@@ -1,19 +1,19 @@
 package frc.robot.autos.primitives;
 
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Wrist;
 
 public class SendWristToRelativeEncoderPosition extends DurationCommand {
 
     // FIXME: Actually move write to position based upon relative 
-    private final Grabber grabber;
+    private final Wrist wrist;
     private final double desiredWristPosition;
     private boolean atDesiredPosition;
 
     private static final double EPSILON = 0.1;  // FIXME: What kind of slack will we accept for "at desired position"
 
-    public SendWristToRelativeEncoderPosition(Grabber grabber, double maxTimeout, double position) {
+    public SendWristToRelativeEncoderPosition(Wrist wrist, double maxTimeout, double position) {
         super(maxTimeout);
-        this.grabber = grabber;
+        this.wrist = wrist;
         this.desiredWristPosition = position;
     }
 
@@ -27,25 +27,25 @@ public class SendWristToRelativeEncoderPosition extends DurationCommand {
     public void execute() {
         super.execute();
 
-        double currentWristPosition = grabber.getWristRelativePosition();
+        double currentWristPosition = wrist.getRelativePosition();
         double diff = desiredWristPosition - currentWristPosition;
 
         double absDiff = Math.abs(diff);
         if (absDiff < EPSILON) {
-            grabber.stopWristMotors();
+            wrist.stop();
             atDesiredPosition = true;
         } else {
             if (diff < 0) {
-                grabber.wristUp();
+                wrist.up();
             } else {
-                grabber.wristDown();
+                wrist.down();
             }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        grabber.stopWristMotors();
+        wrist.stop();
         super.end(interrupted);
     }
 
