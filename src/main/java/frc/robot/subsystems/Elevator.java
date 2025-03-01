@@ -65,7 +65,7 @@ public class Elevator implements Subsystem {
                 .reverseLimitSwitchEnabled(false); // NOTE: Really want both motors hooked to same limit switches
 
             //rightElevatorMotorConfig.encoder
-            //    .positionConversionFactor(1.0d);  // NOTE: Might wish to multiple by value to get "inches"
+            //    .positionConversionFactor(METERS_PER_ROTATION);  // NOTE: Might wish to multiple by value to get "inches"
 
             rightElevatorMotor.configure(rightElevatorMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
             rightElevatorMotorEncoder = rightElevatorMotor.getEncoder();
@@ -136,5 +136,10 @@ public class Elevator implements Subsystem {
 
     public double getEncoderPosition() {
         return rightElevatorMotorEncoder.getPosition();  // FiXME: Average values of both?????
+    }
+
+    public void resetEncoderPosition() {
+        leftElevatorMotorEncoder.setPosition(0.0d);
+        rightElevatorMotorEncoder.setPosition(0.0d);
     }
 }

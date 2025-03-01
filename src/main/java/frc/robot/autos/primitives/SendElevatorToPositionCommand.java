@@ -1,5 +1,6 @@
 package frc.robot.autos.primitives;
 
+import edu.wpi.first.units.DistanceUnit;
 import frc.robot.subsystems.Elevator;
 
 public class SendElevatorToPositionCommand extends DurationCommand {

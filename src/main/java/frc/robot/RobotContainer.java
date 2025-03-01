@@ -27,14 +27,20 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.autos.primitives.MonitorDistanceDriven;
+import frc.robot.autos.DriveOffTheLine;
+import frc.robot.autos.ScoreTroughCenter;
+import frc.robot.autos.primitives.DriveDirection;
 import frc.robot.autos.primitives.DriveDistance;
-import frc.robot.autos.primitives.DriveDistanceGah;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrainChoreo;
 import frc.robot.subsystems.CommandSwerveDrivetrainPathPlanner;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Grabber;
 
 public class RobotContainer {
+    private static final boolean USE_MANUAL_AUTO_ROUTINES = false;
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = (RotationsPerSecond.of(0.75).in(RadiansPerSecond)) / 2.0d; // 3/4 of a rotation per second max angular velocity
@@ -56,6 +62,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final Elevator elevator = new Elevator();
+    public final Grabber grabber = new Grabber();
 
     private boolean slowModeActive = false;
 
@@ -73,6 +81,7 @@ public class RobotContainer {
     //private final AutoRoutinesChoreo autoRoutinesChoreo;
     private AutoChooser autoChooserChoreo;
     private SendableChooser<Command> autoChooserPathPlanner;
+    private SendableChooser<Command> autoManual;
 
     public RobotContainer() {
         if (drivetrain instanceof CommandSwerveDrivetrainChoreo drivetrainChoreo) {
@@ -82,12 +91,19 @@ public class RobotContainer {
 
             autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
             autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueEasy);
-            SmartDashboard.putData("Auto Chooser", autoChooserChoreo);
+            SmartDashboard.putData("Auto Choreo", autoChooserChoreo);
         }
 
         if (drivetrain instanceof CommandSwerveDrivetrainPathPlanner) {
             autoChooserPathPlanner = AutoBuilder.buildAutoChooser("Tests");
-            SmartDashboard.putData("Auto Mode", autoChooserPathPlanner);
+            SmartDashboard.putData("Auto PathPlanner", autoChooserPathPlanner);
+        }
+
+        if (USE_MANUAL_AUTO_ROUTINES) {
+            autoManual = new SendableChooser<>();
+            autoManual.addOption("Drive Off The Line", new DriveOffTheLine(drivetrain));
+            autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, null, null));
+            SmartDashboard.putData("Auto Manual", autoManual);
         }
 
         SmartDashboard.putNumber("MaxSpeed", MaxSpeed);
@@ -118,8 +134,8 @@ public class RobotContainer {
         joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
-        joystick.pov(90).onTrue(new DriveDistanceGah(drivetrain, DriveDistance.Direction.FORWARD, 10, Units.Inches));
-        joystick.pov(270).onTrue(new DriveDistanceGah(drivetrain, DriveDistance.Direction.REVERSE, 10, Units.Inches));
+        joystick.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
+        joystick.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -151,6 +167,11 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        if (USE_MANUAL_AUTO_ROUTINES) {
+            SmartDashboard.putString(AUTO_MODE_KEY, "Manual");
+            return autoManual.getSelected();
+        }
+
         if (autoChooserChoreo != null) {
             SmartDashboard.putString(AUTO_MODE_KEY, "Choreo");
             return autoChooserChoreo.selectedCommand();

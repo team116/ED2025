@@ -113,10 +113,14 @@ public class Grabber implements Subsystem {
 
     public double getWristAbsolutePosition () {
         if (wristCANCoder == null) {
-            return 0.5d;
+            return 0.0d;
         }
 
         return wristCANCoder.getAbsolutePosition().getValueAsDouble();
+    }
+
+    public double getWristAbsoluteAngle() {
+        return getWristAbsolutePosition() * 180.0d;
     }
 
     public void wristUp() {
