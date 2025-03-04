@@ -20,6 +20,14 @@ import frc.robot.stubs.DummyRelativeEncoder;
 
 public class Wrist implements Subsystem {
 
+    private static final double WRIST_GEARBOX_GEAR_RATIO = 20.0d/1.0d;  // 20:1
+    private static final double WRIST_DEGREES_PER_REVOLUTION = 360.0d / WRIST_GEARBOX_GEAR_RATIO;
+
+    public static final double WRIST_CORAL_STATION_INTAKE_ANGLE = 225.0d;
+    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 180.0d;
+    public static final double WRIST_LEVEL_2_AND_3_ANGLE = 240.0d;
+    public static final double WRIST_DOWN_FULL_ANGLE = 90.0d;
+
     private final MotorController wristMotor;
     private final RelativeEncoder wristMotorEncoder;
     private final CANcoder wristCANCoder;
@@ -47,7 +55,7 @@ public class Wrist implements Subsystem {
 
             // FIXME: Might want this to be a factor to change outputs to angles
             //wristMotorConfig.encoder
-            //    .positionConversionFactor(1.0d);
+                //.positionConversionFactor(WRIST_DEGREES_PER_REVOLUTION);
 
             wristMotor.configure(wristMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
             wristMotorEncoder = wristMotor.getEncoder();
@@ -61,6 +69,10 @@ public class Wrist implements Subsystem {
 
     public double getRelativePosition() {
         return wristMotorEncoder.getPosition();
+    }
+
+    public double getRelativeAngle() {
+        return getRelativePosition() * WRIST_DEGREES_PER_REVOLUTION;
     }
 
     public double getAbsolutePosition () {
@@ -85,5 +97,10 @@ public class Wrist implements Subsystem {
 
     public void stop() {
         wristMotor.stopMotor();
+    }
+
+    // NOTE: Assuming "top" vertical location, set to 270.0 degrees so "bottom" should be 90.0 degrees
+    public void resetRelativeEncoder() {
+        wristMotorEncoder.setPosition(270.0d);
     }
 }

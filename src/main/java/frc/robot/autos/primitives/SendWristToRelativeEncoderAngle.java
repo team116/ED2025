@@ -2,37 +2,37 @@ package frc.robot.autos.primitives;
 
 import frc.robot.subsystems.Wrist;
 
-public class SendWristToRelativeEncoderPosition extends DurationCommand {
+public class SendWristToRelativeEncoderAngle extends DurationCommand {
 
     private final Wrist wrist;
-    private final double desiredWristPosition;
-    private boolean atDesiredPosition;
+    private final double desiredWristAngle;
+    private boolean atDesiredAngle;
 
     private static final double EPSILON = 0.5;  // UGH.  Seems like 0.42857 degrees per click is what we get at wrist itself
 
-    public SendWristToRelativeEncoderPosition(Wrist wrist, double maxTimeout, double position) {
+    public SendWristToRelativeEncoderAngle(Wrist wrist, double maxTimeout, double angle) {
         super(maxTimeout);
         this.wrist = wrist;
-        this.desiredWristPosition = position;
+        this.desiredWristAngle = angle;
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        this.atDesiredPosition = false;
+        this.atDesiredAngle = false;
     }
 
     @Override
     public void execute() {
         super.execute();
 
-        double currentWristPosition = wrist.getRelativePosition();
-        double diff = desiredWristPosition - currentWristPosition;
+        double currentWristAngle = wrist.getRelativeAngle();
+        double diff = desiredWristAngle - currentWristAngle;
 
         double absDiff = Math.abs(diff);
         if (absDiff < EPSILON) {
             wrist.stop();
-            atDesiredPosition = true;
+            atDesiredAngle = true;
         } else {
             if (diff < 0) {
                 wrist.up();
@@ -50,6 +50,6 @@ public class SendWristToRelativeEncoderPosition extends DurationCommand {
 
     @Override
     public boolean isFinished() {
-        return super.isFinished() || atDesiredPosition;
+        return super.isFinished() || atDesiredAngle;
     }
 }

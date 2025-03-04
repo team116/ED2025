@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.autos.primitives.MonitorDistanceDriven;
+import frc.robot.autos.primitives.SendElevatorToPositionCommand;
+import frc.robot.autos.primitives.SendWristToRelativeEncoderAngle;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.autos.DriveOffTheLine;
 import frc.robot.autos.ScoreTroughCenter;
@@ -75,12 +77,44 @@ public class RobotContainer {
     private final JoystickButton intakeExpelButton;
     private final JoystickButton climberUpButton;
     private final JoystickButton climberDownButton;
+    private final JoystickButton intakeContinualConsumeButton;
+    private final JoystickButton intakeContinualExpelButton;
+    private final JoystickButton intakeOffButton;
+    private final JoystickButton wristCoralStationIntakeAngleButton;
+    private final JoystickButton wristLevel4StraightOutAngleButton;
+    private final JoystickButton wristFullyDownAngleButton;
+    private final JoystickButton wristLevel2And3AngleButton;
+    private final JoystickButton cancelAllMacrosButton;
+    private final JoystickButton elevatorToLevel1Button;  // Trough position
+    private final JoystickButton elevatorToLevel2Button;
+    private final JoystickButton elevatorToLevel3Button;
+    private final JoystickButton elevatorToLevel4Button;
+    private final JoystickButton elevatorToCoralStationIntakeButton;
+    private final JoystickButton elevatorToNetButton;
+    private final JoystickButton elevatorToBottomButton;
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
     public final Climber climber = new Climber();
     public final Intake intake = new Intake();
     public final Wrist wrist = new Wrist();
+
+    private static final double WRIST_TIMEOUT = 1.5d;
+
+    private final Command sendWristToCoralStationInputAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE);
+    private final Command sendWristToLevel4NeutralAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
+    private final Command sendWristToDownFullAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
+    private final Command sendWristToLevel2And3Angle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
+
+    private static final double ELEVATOR_TIMEOUT = 2.0d;
+
+    private final Command sendElevatorToLevel1 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_1_POSITION);
+    private final Command sendElevatorToLevel2 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_2_POSITION);
+    private final Command sendElevatorToLevel3 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_3_POSITION);
+    private final Command sendElevatorToLevel4 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_4_POSITION);
+    private final Command sendElevatorToCoralStationIntake = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.CORAL_STATION_INTAKE_POSITION);
+    private final Command sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION);
+    private final Command sendElevatorToBottom = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.BOTTOM_POSITION);
 
     private boolean slowModeActive = false;
 
@@ -130,12 +164,27 @@ public class RobotContainer {
         if (GUNNER_CONTROLS_CONNECTED) {
             gunnerPad = new Joystick(1);
             gunnerLogitech = new Joystick(2);
-            wristUpButton = new JoystickButton(gunnerLogitech, 9);
-            wristDownButton = new JoystickButton(gunnerLogitech, 10);
-            intakeConsumeButton = new JoystickButton(gunnerLogitech, 5);
-            intakeExpelButton = new JoystickButton(gunnerLogitech, 6);
-            climberUpButton = new JoystickButton(gunnerLogitech, 8);
-            climberDownButton = new JoystickButton(gunnerLogitech, 7);
+            wristUpButton = new JoystickButton(gunnerLogitech, 10);
+            wristDownButton = new JoystickButton(gunnerLogitech, 9);
+            intakeConsumeButton = new JoystickButton(gunnerLogitech, 11);
+            intakeExpelButton = new JoystickButton(gunnerLogitech, 12);
+            climberUpButton = new JoystickButton(gunnerPad, 14);
+            climberDownButton = new JoystickButton(gunnerPad, 10);
+            intakeContinualConsumeButton = new JoystickButton(gunnerLogitech, 1);
+            intakeContinualExpelButton = new JoystickButton(gunnerLogitech, 2);
+            intakeOffButton = new JoystickButton(gunnerLogitech, 4);
+            wristCoralStationIntakeAngleButton = new JoystickButton(gunnerLogitech, 5);
+            wristLevel4StraightOutAngleButton = new JoystickButton(gunnerLogitech, 6);
+            wristFullyDownAngleButton = new JoystickButton(gunnerLogitech, 8);
+            wristLevel2And3AngleButton = new JoystickButton(gunnerLogitech, 7);
+            cancelAllMacrosButton = new JoystickButton(gunnerLogitech, 3);
+            elevatorToLevel1Button = new JoystickButton(gunnerPad, 8);
+            elevatorToLevel2Button = new JoystickButton(gunnerPad, 6);
+            elevatorToLevel3Button = new JoystickButton(gunnerPad, 7);
+            elevatorToLevel4Button = new JoystickButton(gunnerPad, 5);
+            elevatorToCoralStationIntakeButton = new JoystickButton(gunnerPad, 2);
+            elevatorToNetButton = new JoystickButton(gunnerPad, 1);
+            elevatorToBottomButton = new JoystickButton(gunnerPad, 11);
             configureGunnerBindings();
         } else {
             gunnerPad = null;
@@ -146,6 +195,21 @@ public class RobotContainer {
             intakeExpelButton = null;
             climberUpButton = null;
             climberDownButton = null;
+            intakeContinualConsumeButton = null;
+            intakeContinualExpelButton = null;
+            intakeOffButton = null;
+            wristCoralStationIntakeAngleButton = null;
+            wristLevel4StraightOutAngleButton = null;
+            wristFullyDownAngleButton = null;
+            wristLevel2And3AngleButton = null;
+            cancelAllMacrosButton = null;
+            elevatorToLevel1Button = null;
+            elevatorToLevel2Button = null;
+            elevatorToLevel3Button = null;
+            elevatorToLevel4Button = null;
+            elevatorToCoralStationIntakeButton = null;
+            elevatorToNetButton = null;
+            elevatorToBottomButton = null;
         }
     }
 
@@ -213,6 +277,35 @@ public class RobotContainer {
         climberDownButton.onTrue(climber.startEnd(() -> climber.dropDownSlow(), () -> climber.stop()));
         intakeConsumeButton.onTrue(intake.startEnd(() -> intake.consume(), () -> intake.stop()));
         intakeExpelButton.onTrue(intake.startEnd(() -> intake.expel(), () -> intake.stop()));
+        intakeContinualConsumeButton.onTrue(intake.runOnce(() -> intake.consume()));
+        intakeContinualExpelButton.onTrue(intake.runOnce(() -> intake.expel()));
+        intakeOffButton.onTrue(intake.runOnce(() -> intake.stop()));
+
+        wristCoralStationIntakeAngleButton.onTrue(sendWristToCoralStationInputAngle);
+        wristLevel4StraightOutAngleButton.onTrue(sendWristToLevel4NeutralAngle);
+        wristFullyDownAngleButton.onTrue(sendWristToDownFullAngle);
+        wristLevel2And3AngleButton.onTrue(sendWristToLevel2And3Angle);
+
+        elevatorToBottomButton.onTrue(sendElevatorToBottom);
+        elevatorToCoralStationIntakeButton.onTrue(sendElevatorToCoralStationIntake);
+        elevatorToLevel1Button.onTrue(sendElevatorToLevel1);
+        elevatorToLevel2Button.onTrue(sendElevatorToLevel2);
+        elevatorToLevel3Button.onTrue(sendElevatorToLevel3);
+        elevatorToLevel4Button.onTrue(sendElevatorToLevel4);
+        elevatorToNetButton.onTrue(sendElevatorToNet);
+
+        cancelAllMacrosButton
+            .onTrue(Commands.runOnce(() -> sendWristToCoralStationInputAngle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendWristToLevel4NeutralAngle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendWristToDownFullAngle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendWristToLevel2And3Angle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToBottom.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToCoralStationIntake.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel1.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel2.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel3.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel4.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()));
     }
 
     public Command getAutonomousCommand() {

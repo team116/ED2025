@@ -51,6 +51,12 @@ public class Robot extends TimedRobot {
     // } else {
     //   SmartDashboard.putString(RobotContainer.APRIL_TAG_KEY, "no target found");
     // }
+
+    SmartDashboard.putNumber("Elevator Position", m_robotContainer.elevator.getEncoderPosition());
+    SmartDashboard.putNumber("Wrist Position", m_robotContainer.wrist.getRelativePosition());
+    SmartDashboard.putNumber("Wrist Angle", m_robotContainer.wrist.getRelativeAngle());
+    SmartDashboard.putBoolean("Coral Limit Switch", m_robotContainer.intake.coralLimitSwitchIsPressed());
+    SmartDashboard.putBoolean("Algae Limit Switch", m_robotContainer.intake.algaeLimitSwitchIsPressed());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

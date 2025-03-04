@@ -16,6 +16,15 @@ import frc.robot.stubs.DummyMotorController;
 import frc.robot.stubs.DummyRelativeEncoder;
 
 public class Elevator implements Subsystem {
+
+    public static final double LEVEL_1_POSITION = 0.0d;
+    public static final double LEVEL_2_POSITION = 0.0d;
+    public static final double LEVEL_3_POSITION = 0.0d;
+    public static final double LEVEL_4_POSITION = 0.0d;
+    public static final double CORAL_STATION_INTAKE_POSITION = 0.0d;
+    public static final double NET_POSITION = 0.0d;
+    public static final double BOTTOM_POSITION = 0.0d;  // This _should_ be 0.0d;
+
     private final MotorController leftElevatorMotor;
     private final MotorController rightElevatorMotor;
 
