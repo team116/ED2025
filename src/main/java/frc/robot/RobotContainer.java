@@ -73,8 +73,8 @@ public class RobotContainer {
 
     private final JoystickButton wristUpButton;
     private final JoystickButton wristDownButton;
-    private final JoystickButton intakeConsumeButton;
-    private final JoystickButton intakeExpelButton;
+    private final JoystickButton wristResetEncoderButton;
+    private final JoystickButton elevatorResetEncoderButton;
     private final JoystickButton climberUpButton;
     private final JoystickButton climberDownButton;
     private final JoystickButton intakeContinualConsumeButton;
@@ -166,8 +166,8 @@ public class RobotContainer {
             gunnerLogitech = new Joystick(2);
             wristUpButton = new JoystickButton(gunnerLogitech, 10);
             wristDownButton = new JoystickButton(gunnerLogitech, 9);
-            intakeConsumeButton = new JoystickButton(gunnerLogitech, 11);
-            intakeExpelButton = new JoystickButton(gunnerLogitech, 12);
+            wristResetEncoderButton = new JoystickButton(gunnerLogitech, 11);
+            elevatorResetEncoderButton = new JoystickButton(gunnerLogitech, 12);
             climberUpButton = new JoystickButton(gunnerPad, 14);
             climberDownButton = new JoystickButton(gunnerPad, 10);
             intakeContinualConsumeButton = new JoystickButton(gunnerLogitech, 1);
@@ -191,8 +191,8 @@ public class RobotContainer {
             gunnerLogitech = null;
             wristUpButton = null;
             wristDownButton = null;
-            intakeConsumeButton = null;
-            intakeExpelButton = null;
+            wristResetEncoderButton = null;
+            elevatorResetEncoderButton = null;
             climberUpButton = null;
             climberDownButton = null;
             intakeContinualConsumeButton = null;
@@ -275,8 +275,8 @@ public class RobotContainer {
         wristDownButton.onTrue(wrist.startEnd(() -> wrist.down(), () -> wrist.stop()));
         climberUpButton.onTrue(climber.startEnd(() -> climber.pullUpSlow(), () -> climber.stop()));
         climberDownButton.onTrue(climber.startEnd(() -> climber.dropDownSlow(), () -> climber.stop()));
-        intakeConsumeButton.onTrue(intake.startEnd(() -> intake.consume(), () -> intake.stop()));
-        intakeExpelButton.onTrue(intake.startEnd(() -> intake.expel(), () -> intake.stop()));
+        wristResetEncoderButton.onTrue(wrist.runOnce(() -> wrist.resetRelativeEncoder()));
+        elevatorResetEncoderButton.onTrue(elevator.runOnce(() -> elevator.resetEncoderPosition()));
         intakeContinualConsumeButton.onTrue(intake.runOnce(() -> intake.consume()));
         intakeContinualExpelButton.onTrue(intake.runOnce(() -> intake.expel()));
         intakeOffButton.onTrue(intake.runOnce(() -> intake.stop()));
