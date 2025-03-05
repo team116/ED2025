@@ -12,6 +12,7 @@ public class DefaultElevatorCommand extends Command {
     public DefaultElevatorCommand(Elevator elevator, Joystick gunnerLogitech) {
         this.elevator = elevator;
         this.gunnerLogitech = gunnerLogitech;
+        addRequirements(elevator);
     }
 
     @Override
