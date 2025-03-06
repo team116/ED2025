@@ -32,6 +32,7 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.autos.primitives.MonitorDistanceDriven;
 import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToRelativeEncoderAngle;
+import frc.robot.commands.AprilTagAutoAlign;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.autos.DriveOffTheLine;
 import frc.robot.autos.ScoreTroughCenter;
@@ -47,8 +48,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
-    private static final boolean USE_MANUAL_AUTO_ROUTINES = false;
-    private static final boolean GUNNER_CONTROLS_CONNECTED = false;
+    private static final boolean USE_MANUAL_AUTO_ROUTINES = true; //toggle between using the primitive based autos and the path planning autos
+    private static final boolean GUNNER_CONTROLS_CONNECTED = true; //leave true, assume there is a driver station
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = (RotationsPerSecond.of(0.75).in(RadiansPerSecond)) / 2.0d; // 3/4 of a rotation per second max angular velocity
@@ -236,8 +237,10 @@ public class RobotContainer {
         driverController.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
-        driverController.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
-        driverController.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
+        // driverController.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
+        // driverController.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
+        driverController.pov(90).onTrue(new AprilTagAutoAlign(drivetrain, true));
+        driverController.pov(270).onTrue(new AprilTagAutoAlign(drivetrain, false));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -368,24 +371,5 @@ public class RobotContainer {
         } else {
             SmartDashboard.putString(SPEED_MODE_KEY, FAST_MODE);
         }
-    }
-
-    public void alignToAprilTag() {
-        double targetAprilTag = LimelightHelpers.getFiducialID(Constants.LIMELIGHT_NAME);
-        //LimelightHelpers.setPriorityTagID("", (int)targetAprilTag);
-        //Pose2d position = LimelightHelpers.getBotPoseEstimate(Constants.LIMELIGHT_NAME,"",false).pose;
-
-        //Move with desired position based on april tag ID difference with current position in relation to april tag
-
-        LimelightResults results = LimelightHelpers.getLatestResults(Constants.LIMELIGHT_NAME);
-
-        Pose3d desiredPosition = LimelightHelpers.getTargetPose3d_RobotSpace(null);
-        //PoseEstimate desiredSideways = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LIMELIGHT_NAME);
-        double distanceToTarget = LimelightHelpers.getBotPoseEstimate_wpiBlue("").rawFiducials[0].distToRobot;
-
-        double offsetSideways = LimelightHelpers.getTX(Constants.LIMELIGHT_NAME);
-        double offsetForward = LimelightHelpers.getTY(Constants.LIMELIGHT_NAME);
-        LimelightHelpers.getRawFiducials(Constants.LIMELIGHT_NAME);
-
     }
 }
