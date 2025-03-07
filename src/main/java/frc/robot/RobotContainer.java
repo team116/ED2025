@@ -165,20 +165,26 @@ public class RobotContainer {
         if (GUNNER_CONTROLS_CONNECTED) {
             gunnerPad = new Joystick(1);
             gunnerLogitech = new Joystick(2);
-            wristUpButton = new JoystickButton(gunnerLogitech, 10);
-            wristDownButton = new JoystickButton(gunnerLogitech, 9);
+            
+            //gunner stick
+            //wrist
+            wristUpButton = new JoystickButton(gunnerLogitech, 9);
+            wristDownButton = new JoystickButton(gunnerLogitech, 10);
+            wristCoralStationIntakeAngleButton = new JoystickButton(gunnerLogitech, 5);
+            wristLevel4StraightOutAngleButton = new JoystickButton(gunnerLogitech, 7);
+            wristFullyDownAngleButton = new JoystickButton(gunnerLogitech, 8);
+            wristLevel2And3AngleButton = new JoystickButton(gunnerLogitech, 6);
             wristResetEncoderButton = new JoystickButton(gunnerLogitech, 11);
-            elevatorResetEncoderButton = new JoystickButton(gunnerLogitech, 12);
-            climberUpButton = new JoystickButton(gunnerPad, 14);
-            climberDownButton = new JoystickButton(gunnerPad, 10);
+            //intake
             intakeContinualConsumeButton = new JoystickButton(gunnerLogitech, 1);
             intakeContinualExpelButton = new JoystickButton(gunnerLogitech, 2);
             intakeOffButton = new JoystickButton(gunnerLogitech, 4);
-            wristCoralStationIntakeAngleButton = new JoystickButton(gunnerLogitech, 5);
-            wristLevel4StraightOutAngleButton = new JoystickButton(gunnerLogitech, 6);
-            wristFullyDownAngleButton = new JoystickButton(gunnerLogitech, 8);
-            wristLevel2And3AngleButton = new JoystickButton(gunnerLogitech, 7);
+            
             cancelAllMacrosButton = new JoystickButton(gunnerLogitech, 3);
+
+            //elevator
+            elevatorResetEncoderButton = new JoystickButton(gunnerLogitech, 12);
+            //gunner pad
             elevatorToLevel1Button = new JoystickButton(gunnerPad, 8);
             elevatorToLevel2Button = new JoystickButton(gunnerPad, 6);
             elevatorToLevel3Button = new JoystickButton(gunnerPad, 7);
@@ -186,6 +192,9 @@ public class RobotContainer {
             elevatorToCoralStationIntakeButton = new JoystickButton(gunnerPad, 2);
             elevatorToNetButton = new JoystickButton(gunnerPad, 1);
             elevatorToBottomButton = new JoystickButton(gunnerPad, 11);
+            //climber
+            climberUpButton = new JoystickButton(gunnerPad, 14); // spike up, the actual mechanism moves up, not the robot
+            climberDownButton = new JoystickButton(gunnerPad, 10); //spike down, the actual mechanism moves down
             configureGunnerBindings();
         } else {
             gunnerPad = null;
