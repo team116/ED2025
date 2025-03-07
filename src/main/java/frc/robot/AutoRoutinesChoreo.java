@@ -7,11 +7,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+import frc.robot.autos.primitives.SendElevatorToPositionCommand;
+import frc.robot.autos.primitives.SendWristToAbsoluteEncoderAngle;
+import frc.robot.autos.primitives.ExpelGamePieceCommand;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Intake;
+
 public class AutoRoutinesChoreo {
     private final AutoFactory autoFactory;
+    private final Elevator elevator;
+    private final Wrist wrist;
+    private final Intake intake;
 
-    public AutoRoutinesChoreo(AutoFactory factory) {
+    public AutoRoutinesChoreo(AutoFactory factory, Elevator elevator, Wrist wrist, Intake intake) {
         autoFactory = factory;
+        this.elevator = elevator;
+        this.wrist = wrist;
+        this.intake = intake;
     }
 
     public AutoRoutine simplePathAuto() {
@@ -40,6 +53,26 @@ public class AutoRoutinesChoreo {
         blueStraightTraj.atTime("ElevatorUp").onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "ElevatorUp")));
     
         blueStraightTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done blue straight")));
+
+        return routine;
+    }
+
+    public AutoRoutine blueLeftEasy() {
+        final AutoRoutine routine = autoFactory.newRoutine("Left Bound Blue Alliance");
+        final AutoTrajectory blueLeftTraj = routine.trajectory("BlueSimpleLeft");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                blueLeftTraj.resetOdometry(), 
+                blueLeftTraj.cmd()
+            )
+        );
+
+        blueLeftTraj.atTime("Extend").onTrue(new SendElevatorToPositionCommand(elevator,1.5d,Elevator.LEVEL_1_POSITION)); // On Extend trigger, extend to L1 Position for 1.5 seconds
+
+        blueLeftTraj.atTime("Rotate").onTrue(new SendWristToAbsoluteEncoderAngle(wrist,1.0d,Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)); // On Rotate trigger, rotate to L1 Position for 1.0 seconds
+
+        blueLeftTraj.atTime("Expel").onTrue(new ExpelGamePieceCommand(intake,2.0d)); // On Expel trigger, Expel for 1.0 seconds
 
         return routine;
     }
