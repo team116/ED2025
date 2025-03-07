@@ -139,7 +139,7 @@ public class RobotContainer {
         if (drivetrain instanceof CommandSwerveDrivetrainChoreo drivetrainChoreo) {
             autoChooserChoreo = new AutoChooser();
             AutoFactory autoFactoryChoreo = drivetrainChoreo.createAutoFactory();
-            AutoRoutinesChoreo autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo);
+            AutoRoutinesChoreo autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo, elevator, wrist, intake);
 
             autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
             autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueEasy);
