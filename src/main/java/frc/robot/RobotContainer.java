@@ -248,8 +248,15 @@ public class RobotContainer {
         );
         // driverController.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
         // driverController.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
-        driverController.pov(90).onTrue(new AprilTagAutoAlign(drivetrain, true));
-        driverController.pov(270).onTrue(new AprilTagAutoAlign(drivetrain, false));
+        AprilTagAutoAlign alignToRightTag = new AprilTagAutoAlign(drivetrain, true);
+        AprilTagAutoAlign alignToLeftTag = new AprilTagAutoAlign(drivetrain, false);
+        driverController.pov(90).onTrue(alignToRightTag);
+        driverController.pov(270).onTrue(alignToLeftTag);
+        driverController.rightTrigger().and(driverController.leftTrigger())
+            .onTrue(Commands.runOnce(() -> {
+                alignToLeftTag.cancel(); 
+                alignToRightTag.cancel();
+            }));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
