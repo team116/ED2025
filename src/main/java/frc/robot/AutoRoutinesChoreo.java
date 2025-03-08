@@ -68,11 +68,33 @@ public class AutoRoutinesChoreo {
             )
         );
 
-        blueLeftTraj.atTime("Extend").onTrue(new SendElevatorToPositionCommand(elevator,1.5d,Elevator.LEVEL_1_POSITION)); // On Extend trigger, extend to L1 Position for 1.5 seconds
+        blueLeftTraj.atTime("Extend").onTrue(Commands.parallel(
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION),
+            new InstantCommand(() -> SmartDashboard.putString("event"), "Extending blue left"))); // On Extend trigger, extend to L1 Position for 1.5 seconds
 
-        blueLeftTraj.atTime("Rotate").onTrue(new SendWristToAbsoluteEncoderAngle(wrist,1.0d,Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)); // On Rotate trigger, rotate to L1 Position for 1.0 seconds
+        blueLeftTraj.atTime("Rotate").onTrue(new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)); // On Rotate trigger, rotate to L1 Position for 1.0 seconds
 
         blueLeftTraj.atTime("Expel").onTrue(new ExpelGamePieceCommand(intake,2.0d)); // On Expel trigger, Expel for 1.0 seconds
+
+        return routine;
+    }
+
+    public AutoRoutine blueRightEasy() {
+        final AutoRoutine routine = autoFactory.newRoutine("Right Bound Blue Alliance");
+        final AutoTrajectory blueRightTraj = routine.trajectory("BlueSimpleRight");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                blueRightTraj.resetOdometry(),
+                blueRightTraj.cmd()
+            )
+        );
+
+        blueRightTraj.atTime("Extend").onTrue(new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION));
+
+        blueRightTraj.atTime("Rotate").onTrue(new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE));
+
+        blueRightTraj.atTime("Expel").onTrue(new ExpelGamePieceCommand(intake,2.0d));
 
         return routine;
     }
