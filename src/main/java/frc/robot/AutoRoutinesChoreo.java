@@ -64,17 +64,25 @@ public class AutoRoutinesChoreo {
         routine.active().onTrue(
             Commands.sequence(
                 blueLeftTraj.resetOdometry(), 
-                blueLeftTraj.cmd()
+                blueLeftTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Starting blue left"))
             )
         );
 
         blueLeftTraj.atTime("Extend").onTrue(Commands.parallel(
             new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION),
-            new InstantCommand(() -> SmartDashboard.putString("event"), "Extending blue left"))); // On Extend trigger, extend to L1 Position for 1.5 seconds
+            new InstantCommand(() -> SmartDashboard.putString("event", "Extending blue left"))
+            )); // On Extend trigger, extend to L1 Position for 1.5 seconds
 
-        blueLeftTraj.atTime("Rotate").onTrue(new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)); // On Rotate trigger, rotate to L1 Position for 1.0 seconds
+        blueLeftTraj.atTime("Rotate").onTrue(Commands.parallel(
+            new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Rotating blue left")))); // On Rotate trigger, rotate to L1 Position for 1.0 seconds
 
-        blueLeftTraj.atTime("Expel").onTrue(new ExpelGamePieceCommand(intake,2.0d)); // On Expel trigger, Expel for 1.0 seconds
+        blueLeftTraj.atTime("Expel").onTrue(Commands.parallel(
+            new ExpelGamePieceCommand(intake,2.0d),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Expelling blue left")))); // On Expel trigger, Expel for 1.0 seconds
+        
+        blueLeftTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done blue left")));
 
         return routine;
     }
@@ -86,15 +94,24 @@ public class AutoRoutinesChoreo {
         routine.active().onTrue(
             Commands.sequence(
                 blueRightTraj.resetOdometry(),
-                blueRightTraj.cmd()
+                blueRightTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Starting blue right"))
             )
         );
 
-        blueRightTraj.atTime("Extend").onTrue(new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION));
+        blueRightTraj.atTime("Extend").onTrue(Commands.parallel(
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Extending blue right"))));
 
-        blueRightTraj.atTime("Rotate").onTrue(new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE));
+        blueRightTraj.atTime("Rotate").onTrue(Commands.parallel(
+            new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Rotating blue right"))));
 
-        blueRightTraj.atTime("Expel").onTrue(new ExpelGamePieceCommand(intake,2.0d));
+        blueRightTraj.atTime("Expel").onTrue(Commands.parallel(
+            new ExpelGamePieceCommand(intake,2.0d),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Expelling blue right"))));
+
+        blueRightTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done blue right")));
 
         return routine;
     }
