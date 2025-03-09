@@ -38,7 +38,7 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
-    public AutoRoutine blueEasy() {
+    public AutoRoutine blueStraightEasy() {
         final AutoRoutine routine = autoFactory.newRoutine("My Awesome Blue Routine");
         final AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraight");
 
@@ -50,9 +50,52 @@ public class AutoRoutinesChoreo {
             )      
         );
 
-        blueStraightTraj.atTime("ElevatorUp").onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "ElevatorUp")));
+        blueStraightTraj.atTime("Extend").onTrue(Commands.parallel(
+            new InstantCommand(() -> SmartDashboard.putString("event", "Extend blue straight")),
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
+
+        blueStraightTraj.atTime("Rotate").onTrue(Commands.parallel(
+             new InstantCommand(() -> SmartDashboard.putString("event", "Rotate blue straight")),
+             new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)
+        ));
+
+        blueStraightTraj.atTime("Expel").onTrue(Commands.parallel(
+            new InstantCommand(() -> SmartDashboard.putString("event", "Expel blue straight")),
+            new ExpelGamePieceCommand(intake, 2.0d)
+        ));
     
         blueStraightTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done blue straight")));
+
+        return routine;
+    }
+
+    public AutoRoutine redStraightEasy() {
+        final AutoRoutine routine = autoFactory.newRoutine("My Awesome Red Routine");
+        final AutoTrajectory redStraightTraj = routine.trajectory("RedStraight");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                new InstantCommand(() -> SmartDashboard.putString("event", "Start red straight")),
+                redStraightTraj.resetOdometry(),
+                redStraightTraj.cmd()
+            )      
+        );
+
+        redStraightTraj.atTime("Extend").onTrue(Commands.parallel(
+            new InstantCommand(() -> SmartDashboard.putString("event", "Extend red straight")),
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
+
+        redStraightTraj.atTime("Rotate").onTrue(Commands.parallel(
+             new InstantCommand(() -> SmartDashboard.putString("event", "Rotate red straight")),
+             new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)
+        ));
+
+        redStraightTraj.atTime("Expel").onTrue(Commands.parallel(
+            new InstantCommand(() -> SmartDashboard.putString("event", "Expel red straight")),
+            new ExpelGamePieceCommand(intake, 2.0d)
+        ));
+    
+        redStraightTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done red straight")));
 
         return routine;
     }
@@ -87,6 +130,36 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
+    public AutoRoutine redLeftEasy() {
+        final AutoRoutine routine = autoFactory.newRoutine("Left Bound Red Alliance");
+        final AutoTrajectory redLeftTraj = routine.trajectory("RedSimpleLeft");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                redLeftTraj.resetOdometry(), 
+                redLeftTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Starting red left"))
+            )
+        );
+
+        redLeftTraj.atTime("Extend").onTrue(Commands.parallel(
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Extending red left"))
+            ));
+
+        redLeftTraj.atTime("Rotate").onTrue(Commands.parallel(
+            new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Rotating red left")))); 
+        
+        redLeftTraj.atTime("Expel").onTrue(Commands.parallel(
+            new ExpelGamePieceCommand(intake,2.0d),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Expelling red left"))));
+        
+        redLeftTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done red left")));
+
+        return routine;
+    }
+
     public AutoRoutine blueRightEasy() {
         final AutoRoutine routine = autoFactory.newRoutine("Right Bound Blue Alliance");
         final AutoTrajectory blueRightTraj = routine.trajectory("BlueSimpleRight");
@@ -112,6 +185,35 @@ public class AutoRoutinesChoreo {
             new InstantCommand(() -> SmartDashboard.putString("event", "Expelling blue right"))));
 
         blueRightTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done blue right")));
+
+        return routine;
+    }
+
+    public AutoRoutine redRightEasy() {
+        final AutoRoutine routine = autoFactory.newRoutine("Right Bound Red Alliance");
+        final AutoTrajectory redRightTraj = routine.trajectory("RedSimpleRight");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                redRightTraj.resetOdometry(),
+                redRightTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Starting red right"))
+            )
+        );
+
+        redRightTraj.atTime("Extend").onTrue(Commands.parallel(
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Extending red right"))));
+
+        redRightTraj.atTime("Rotate").onTrue(Commands.parallel(
+            new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Rotating red right"))));
+
+        redRightTraj.atTime("Expel").onTrue(Commands.parallel(
+            new ExpelGamePieceCommand(intake,2.0d),
+            new InstantCommand(() -> SmartDashboard.putString("event", "Expelling red right"))));
+
+        redRightTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event", "Done red right")));
 
         return routine;
     }

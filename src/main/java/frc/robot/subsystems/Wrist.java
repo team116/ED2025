@@ -88,10 +88,18 @@ public class Wrist implements Subsystem {
     }
 
     public void up() {
-        wristMotor.set(0.1);
+        wristMotor.set(0.2);
     }
 
     public void down() {
+        wristMotor.set(-0.2);
+    }
+
+    public void upSlow() {
+        wristMotor.set(0.1);
+    }
+
+    public void downSlow() {
         wristMotor.set(-0.1);
     }
 

@@ -1,7 +1,7 @@
 package frc.robot;
 
 public final class Constants {
-    public static final boolean USE_STUBS = true;
+    public static final boolean USE_STUBS = false;
 
     // CANBUS IDs
     public static final int ELEVATOR_MOTOR_1_ID = 50;

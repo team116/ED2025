@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -57,6 +58,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Wrist Angle", m_robotContainer.wrist.getRelativeAngle());
     SmartDashboard.putBoolean("Coral Limit Switch", m_robotContainer.intake.coralLimitSwitchIsPressed());
     SmartDashboard.putBoolean("Algae Limit Switch", m_robotContainer.intake.algaeLimitSwitchIsPressed());
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -105,6 +107,8 @@ public class Robot extends TimedRobot {
     }
   
     SmartDashboard.putString(RobotContainer.SPEED_MODE_KEY, RobotContainer.FAST_MODE);
+    // NOTE: The bottom line might have crashed the program
+    //Shuffleboard.getTab("SmartDashboard").addCamera("Cameras", "limelight", "http://10.1.16.14:5800");
   }
 
   /** This function is called periodically during operator control. */

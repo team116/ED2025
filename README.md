@@ -1,3 +1,5 @@
+
+\
 # ED2025 Subsystems
 ## DriveTrain
 All CTRE-Phoenix (v6)
@@ -46,6 +48,7 @@ All REVLib (?? or is there a CANCoder or other type of abs encoder ??)
 - Probably CANCoder
 - CAN Coder CAN ID: 58
 - 2 max ranges limit switches (safety)
+.
 
 ## Climber
 All REVLib

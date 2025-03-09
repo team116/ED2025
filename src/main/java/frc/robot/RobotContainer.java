@@ -33,7 +33,10 @@ import frc.robot.autos.primitives.MonitorDistanceDriven;
 import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToRelativeEncoderAngle;
 import frc.robot.commands.AprilTagAutoAlign;
+import frc.robot.commands.DefaultClimberCommand;
 import frc.robot.commands.DefaultElevatorCommand;
+import frc.robot.commands.DefaultIntakeCommand;
+import frc.robot.commands.DefaultWristCommand;
 import frc.robot.autos.DriveOffTheLine;
 import frc.robot.autos.ScoreTroughCenter;
 import frc.robot.autos.primitives.DriveDirection;
@@ -142,7 +145,12 @@ public class RobotContainer {
             AutoRoutinesChoreo autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo, elevator, wrist, intake);
 
             autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
-            autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueEasy);
+            autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueStraightEasy);
+            autoChooserChoreo.addRoutine("Blue Left", autoRoutinesChoreo::blueLeftEasy);
+            autoChooserChoreo.addRoutine("Blue Right", autoRoutinesChoreo::blueRightEasy);
+            autoChooserChoreo.addRoutine("Red Center", autoRoutinesChoreo::redStraightEasy);
+            autoChooserChoreo.addRoutine("Red Left", autoRoutinesChoreo::redLeftEasy);
+            autoChooserChoreo.addRoutine("Red Right", autoRoutinesChoreo::redRightEasy);
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);
         }
 
@@ -282,42 +290,60 @@ public class RobotContainer {
 
     private void configureGunnerBindings() {
         elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, gunnerLogitech));
+        wrist.setDefaultCommand(new DefaultWristCommand(wrist, gunnerLogitech));
+        intake.setDefaultCommand(new DefaultIntakeCommand(intake, gunnerLogitech));
+        climber.setDefaultCommand(new DefaultClimberCommand(climber, gunnerPad));
 
-        wristUpButton.onTrue(wrist.startEnd(() -> wrist.up(), () -> wrist.stop()));
-        wristDownButton.onTrue(wrist.startEnd(() -> wrist.down(), () -> wrist.stop()));
-        climberUpButton.onTrue(climber.startEnd(() -> climber.pullUpSlow(), () -> climber.stop()));
-        climberDownButton.onTrue(climber.startEnd(() -> climber.dropDownSlow(), () -> climber.stop()));
+        //wristUpButton.whileTrue(Commands.startEnd(() -> wrist.up(), () -> wrist.stop()));
+        //wristDownButton.whileTrue(Commands.startEnd(() -> wrist.down(), () -> wrist.stop()));
+
+        //wristUpButton.whileTrue(Commands.run(() -> wrist.up()));
+        //wristDownButton.whileTrue(Commands.run(() -> wrist.down()));
+
+        //wristUpButton.whileTrue(wrist.startEnd(() -> wrist.up(), () -> wrist.stop()));
+        //wristDownButton.whileTrue(wrist.startEnd(() -> wrist.down(), () -> wrist.stop()));
+        //climberUpButton.whileTrue(climber.startEnd(() -> climber.pullUpSlow(), () -> climber.stop()));
+        //climberDownButton.whileTrue(climber.startEnd(() -> climber.dropDownSlow(), () -> climber.stop()));
         wristResetEncoderButton.onTrue(wrist.runOnce(() -> wrist.resetRelativeEncoder()));
         elevatorResetEncoderButton.onTrue(elevator.runOnce(() -> elevator.resetEncoderPosition()));
-        intakeContinualConsumeButton.onTrue(intake.runOnce(() -> intake.consume()));
-        intakeContinualExpelButton.onTrue(intake.runOnce(() -> intake.expel()));
+        //intakeContinualConsumeButton.whileTrue(intake.runOnce(() -> intake.consume()));
+        //intakeContinualExpelButton.whileTrue(intake.runOnce(() -> intake.expel()));
+
+        //intakeContinualConsumeButton.whileTrue(intake.startEnd(() -> intake.consume(), () -> intake.stop()));
+        //intakeContinualExpelButton.whileTrue(intake.startEnd(() -> intake.expel(), () -> intake.stop()));
+
+        //intakeContinualConsumeButton.whileTrue(Commands.run(() -> intake.consume()));
+        //intakeContinualExpelButton.whileTrue(Commands.run(() -> intake.expel()));
+
         intakeOffButton.onTrue(intake.runOnce(() -> intake.stop()));
+
+        // FIXME: Put these back in once we get stuff "working"
 
         wristCoralStationIntakeAngleButton.onTrue(sendWristToCoralStationInputAngle);
         wristLevel4StraightOutAngleButton.onTrue(sendWristToLevel4NeutralAngle);
         wristFullyDownAngleButton.onTrue(sendWristToDownFullAngle);
         wristLevel2And3AngleButton.onTrue(sendWristToLevel2And3Angle);
 
-        elevatorToBottomButton.onTrue(sendElevatorToBottom);
-        elevatorToCoralStationIntakeButton.onTrue(sendElevatorToCoralStationIntake);
-        elevatorToLevel1Button.onTrue(sendElevatorToLevel1);
-        elevatorToLevel2Button.onTrue(sendElevatorToLevel2);
-        elevatorToLevel3Button.onTrue(sendElevatorToLevel3);
-        elevatorToLevel4Button.onTrue(sendElevatorToLevel4);
-        elevatorToNetButton.onTrue(sendElevatorToNet);
+        //elevatorToBottomButton.onTrue(sendElevatorToBottom);
+        //elevatorToCoralStationIntakeButton.onTrue(sendElevatorToCoralStationIntake);
+        //elevatorToLevel1Button.onTrue(sendElevatorToLevel1);
+        //elevatorToLevel2Button.onTrue(sendElevatorToLevel2);
+        //elevatorToLevel3Button.onTrue(sendElevatorToLevel3);
+        //elevatorToLevel4Button.onTrue(sendElevatorToLevel4);
+        //elevatorToNetButton.onTrue(sendElevatorToNet);
 
-        cancelAllMacrosButton
-            .onTrue(Commands.runOnce(() -> sendWristToCoralStationInputAngle.cancel()))
-            .onTrue(Commands.runOnce(() -> sendWristToLevel4NeutralAngle.cancel()))
-            .onTrue(Commands.runOnce(() -> sendWristToDownFullAngle.cancel()))
-            .onTrue(Commands.runOnce(() -> sendWristToLevel2And3Angle.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToBottom.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToCoralStationIntake.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToLevel1.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToLevel2.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToLevel3.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToLevel4.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()));
+        // cancelAllMacrosButton
+        //     .onTrue(Commands.runOnce(() -> sendWristToCoralStationInputAngle.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendWristToLevel4NeutralAngle.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendWristToDownFullAngle.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendWristToLevel2And3Angle.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToBottom.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToCoralStationIntake.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel1.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel2.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel3.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel4.cancel()))
+        //     .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()));
     }
 
     public Command getAutonomousCommand() {

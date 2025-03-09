@@ -1,5 +1,6 @@
 package frc.robot.autos.primitives;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Wrist;
 
 public class SendWristToRelativeEncoderPosition extends DurationCommand {
@@ -29,15 +30,18 @@ public class SendWristToRelativeEncoderPosition extends DurationCommand {
         double currentWristPosition = wrist.getRelativePosition();
         double diff = desiredWristPosition - currentWristPosition;
 
+        SmartDashboard.putNumber("curr wrist", currentWristPosition);
+        SmartDashboard.putNumber("diff wrist", diff);
+
         double absDiff = Math.abs(diff);
         if (absDiff < EPSILON) {
             wrist.stop();
             atDesiredPosition = true;
         } else {
             if (diff < 0) {
-                wrist.up();
+                wrist.upSlow();
             } else {
-                wrist.down();
+                wrist.downSlow();
             }
         }
     }
