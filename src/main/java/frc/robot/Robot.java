@@ -30,6 +30,11 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
   }
 
+  @Override
+  public void robotInit() {
+    m_robotContainer.wrist.resetRelativeEncoder();
+  }
+
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -56,8 +61,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Elevator Position", m_robotContainer.elevator.getEncoderPosition());
     SmartDashboard.putNumber("Wrist Position", m_robotContainer.wrist.getRelativePosition());
     SmartDashboard.putNumber("Wrist Angle", m_robotContainer.wrist.getRelativeAngle());
+    SmartDashboard.putNumber("Climber Position", m_robotContainer.climber. getEncoderPosition());
     SmartDashboard.putBoolean("Coral Limit Switch", m_robotContainer.intake.coralLimitSwitchIsPressed());
     SmartDashboard.putBoolean("Algae Limit Switch", m_robotContainer.intake.algaeLimitSwitchIsPressed());
+    m_robotContainer.intake.printMotorVoltages();
 
   }
 
@@ -105,7 +112,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-  
+    m_robotContainer.wrist.resetRelativeEncoder();
+
     SmartDashboard.putString(RobotContainer.SPEED_MODE_KEY, RobotContainer.FAST_MODE);
     // NOTE: The bottom line might have crashed the program
     //Shuffleboard.getTab("SmartDashboard").addCamera("Cameras", "limelight", "http://10.1.16.14:5800");

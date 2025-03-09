@@ -39,6 +39,7 @@ import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.DefaultWristCommand;
 import frc.robot.autos.DriveOffTheLine;
 import frc.robot.autos.ScoreTroughCenter;
+import frc.robot.autos.ScoreTroughCenterNoElevator;
 import frc.robot.autos.primitives.DriveDirection;
 import frc.robot.autos.primitives.DriveDistance;
 import frc.robot.generated.TunerConstants;
@@ -162,7 +163,8 @@ public class RobotContainer {
         if (USE_MANUAL_AUTO_ROUTINES) {
             autoManual = new SendableChooser<>();
             autoManual.addOption("Drive Off The Line", new DriveOffTheLine(drivetrain));
-            autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, elevator, intake, wrist));
+            //autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, elevator, intake, wrist));
+            autoManual.addOption("Score Center Trough No Elevator", new ScoreTroughCenterNoElevator(drivetrain, intake, wrist));
             SmartDashboard.putData("Auto Manual", autoManual);
         }
 
@@ -322,7 +324,7 @@ public class RobotContainer {
         //intakeContinualConsumeButton.whileTrue(Commands.run(() -> intake.consume()));
         //intakeContinualExpelButton.whileTrue(Commands.run(() -> intake.expel()));
 
-        intakeOffButton.onTrue(intake.runOnce(() -> intake.stop()));
+        //intakeOffButton.onTrue(intake.runOnce(() -> intake.stop()));
 
         // FIXME: Put these back in once we get stuff "working"
 

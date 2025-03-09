@@ -9,7 +9,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class DriveOffTheLine extends SequentialCommandGroup {
 
     public DriveOffTheLine(CommandSwerveDrivetrain commandSwerveDrivetrain) {
-        DriveDistance driveForward = new DriveDistance(commandSwerveDrivetrain, DriveDirection.FORWARD, 48, Units.Inches);
+        DriveDistance driveForward = new DriveDistance(commandSwerveDrivetrain, DriveDirection.FORWARD, 108, Units.Inches); //48 for center reef
 
         addCommands(driveForward);
     }

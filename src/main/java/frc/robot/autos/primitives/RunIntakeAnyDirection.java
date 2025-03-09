@@ -23,16 +23,17 @@ public class RunIntakeAnyDirection extends DurationCommand {
     @Override
     public void initialize() {
         super.initialize();
-        if (direction == IntakeDirection.CONSUME) {
-            intake.consume();
-        } else {
-            intake.expel();
-        } 
     }
 
     @Override
     public void execute() {
         super.execute();
+
+        if (direction == IntakeDirection.CONSUME) {
+            intake.consume();
+        } else {
+            intake.expel();
+        }
     }
 
     @Override

@@ -1,0 +1,31 @@
+{
+ "name":"BlueStraightAlgae",
+ "version":1,
+ "snapshot":{
+  "waypoints":[],
+  "constraints":[],
+  "targetDt":0.05
+ },
+ "params":{
+  "waypoints":[
+    {"x":{"exp":"7.949644565582275 m", "val":7.949644565582275}, "y":{"exp":"4.026 m", "val":4.026}, "heading":{"exp":"pi rad", "val":3.141592653589793}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"5.709364223480225 m", "val":5.709364223480225}, "y":{"exp":"4.026 m", "val":4.026}, "heading":{"exp":"pi rad", "val":3.141592653589793}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
+  "constraints":[
+    {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
+    {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"17.548 m", "val":17.548}, "h":{"exp":"8.052 m", "val":8.052}}}, "enabled":false}],
+  "targetDt":{
+   "exp":"0.05 s",
+   "val":0.05
+  }
+ },
+ "trajectory":{
+  "sampleType":null,
+  "waypoints":[],
+  "samples":[],
+  "splits":[]
+ },
+ "events":[
+   {"name":"Extend", "from":{"target":1, "targetTimestamp":null, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"Rotate", "from":{"target":1, "targetTimestamp":null, "offset":{"exp":"1 s", "val":1.0}}, "event":null}]
+}

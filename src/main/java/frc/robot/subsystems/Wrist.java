@@ -23,10 +23,10 @@ public class Wrist implements Subsystem {
     private static final double WRIST_GEARBOX_GEAR_RATIO = 20.0d/1.0d;  // 20:1
     private static final double WRIST_DEGREES_PER_REVOLUTION = 360.0d / WRIST_GEARBOX_GEAR_RATIO;
 
-    public static final double WRIST_CORAL_STATION_INTAKE_ANGLE = 225.0d;
-    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 180.0d;
-    public static final double WRIST_LEVEL_2_AND_3_ANGLE = 240.0d;
-    public static final double WRIST_DOWN_FULL_ANGLE = 90.0d;
+    public static final double WRIST_CORAL_STATION_INTAKE_ANGLE = 120.0d;
+    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 170.0d;
+    public static final double WRIST_LEVEL_2_AND_3_ANGLE = 130.0d;
+    public static final double WRIST_DOWN_FULL_ANGLE = 250.0d;
 
     private final MotorController wristMotor;
     private final RelativeEncoder wristMotorEncoder;
@@ -45,7 +45,7 @@ public class Wrist implements Subsystem {
 
             wristMotorConfig
                 .idleMode(IdleMode.kBrake)
-                .inverted(false);
+                .inverted(true);
 
             wristMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
@@ -88,19 +88,23 @@ public class Wrist implements Subsystem {
     }
 
     public void up() {
-        wristMotor.set(0.2);
-    }
-
-    public void down() {
         wristMotor.set(-0.2);
     }
 
+    public void down() {
+        wristMotor.set(0.2);
+    }
+
     public void upSlow() {
-        wristMotor.set(0.1);
+        wristMotor.set(-0.1);
     }
 
     public void downSlow() {
-        wristMotor.set(-0.1);
+        wristMotor.set(0.1);
+    }
+
+    public void stall() {
+        wristMotor.set(-0.03);
     }
 
     public void stop() {
@@ -109,6 +113,6 @@ public class Wrist implements Subsystem {
 
     // NOTE: Assuming "top" vertical location, set to 270.0 degrees so "bottom" should be 90.0 degrees
     public void resetRelativeEncoder() {
-        wristMotorEncoder.setPosition(270.0d);
+        wristMotorEncoder.setPosition(90.0d/WRIST_DEGREES_PER_REVOLUTION);
     }
 }

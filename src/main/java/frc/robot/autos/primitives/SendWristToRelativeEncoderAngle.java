@@ -8,6 +8,7 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
     private final double desiredWristAngle;
     private boolean atDesiredAngle;
 
+    private static final double OUTER_EPSILON = 10.0;
     private static final double EPSILON = 0.5;  // UGH.  Seems like 0.42857 degrees per click is what we get at wrist itself
 
     public SendWristToRelativeEncoderAngle(Wrist wrist, double maxTimeout, double angle) {
@@ -35,9 +36,17 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
             atDesiredAngle = true;
         } else {
             if (diff < 0) {
-                wrist.up();
+                if (absDiff < OUTER_EPSILON) {
+                    wrist.upSlow();
+                } else {
+                    wrist.up();
+                }
             } else {
-                wrist.down();
+                if (absDiff < OUTER_EPSILON) {
+                    wrist.downSlow();
+                } else {
+                    wrist.down();
+                }
             }
         }
     }
