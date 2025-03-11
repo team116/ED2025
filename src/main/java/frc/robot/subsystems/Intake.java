@@ -28,7 +28,8 @@ public class Intake implements Subsystem {
 
         leftIntakeMotorConfig
             .idleMode(IdleMode.kBrake)
-            .inverted(false);
+            .inverted(false)
+            .smartCurrentLimit(20);
 
         leftIntakeMotorConfig.limitSwitch
             .forwardLimitSwitchType(Type.kNormallyClosed)
@@ -42,7 +43,8 @@ public class Intake implements Subsystem {
 
         rightIntakeMotorConfig
             .idleMode(IdleMode.kBrake)
-            .inverted(false);
+            .inverted(false)
+            .smartCurrentLimit(20);
 
         rightIntakeMotorConfig.limitSwitch
         .forwardLimitSwitchType(Type.kNormallyClosed)

@@ -45,7 +45,8 @@ public class Wrist implements Subsystem {
 
             wristMotorConfig
                 .idleMode(IdleMode.kBrake)
-                .inverted(true);
+                .inverted(true)
+                .smartCurrentLimit(40);
 
             wristMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)

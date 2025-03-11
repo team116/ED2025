@@ -50,7 +50,8 @@ public class Elevator implements Subsystem {
 
             leftElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
-                .inverted(false);
+                .inverted(false)
+                .smartCurrentLimit(40);
 
             leftElevatorMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
@@ -69,7 +70,8 @@ public class Elevator implements Subsystem {
 
             rightElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
-                .inverted(true);
+                .inverted(false)
+                .smartCurrentLimit(40);  // inverted does NOT work
 
             rightElevatorMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
@@ -104,8 +106,9 @@ public class Elevator implements Subsystem {
 
     // NOTE: Positive is "UP"
     public void move(double percentagePower) {
-        leftElevatorMotor.set(percentagePower);
-        rightElevatorMotor.set(percentagePower);
+        // WTF??? Inversion of motor doesn't seem to work for this motor controller
+        leftElevatorMotor.set(-percentagePower);  // 50 FIXME: Only test one motor at a time
+        rightElevatorMotor.set(percentagePower);  // 51
     }
 
     public void stop() {

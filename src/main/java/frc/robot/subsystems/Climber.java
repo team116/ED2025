@@ -29,7 +29,8 @@ public class Climber implements Subsystem {
 
             climberMotorConfig
                 .idleMode(IdleMode.kBrake)
-                .inverted(false);
+                .inverted(false)
+                .smartCurrentLimit(40);
 
             climberMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
