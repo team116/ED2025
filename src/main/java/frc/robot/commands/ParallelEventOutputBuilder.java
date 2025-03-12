@@ -6,8 +6,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ParallelEventOutputBuilder extends Command{
-    public static Command parallelPutEvent(String eventName, Command... commands) {
-        Command[] commandList;
+
+    public static Command parallelPutEvent(String eventName, Command... commands) { // Basically just build a ParallelCommandGroup with the given commands
+        Command[] commandList;                                                      // And then it adds in an InstantCommand of putting the event on the SmartDashboard
         commandList = new Command[commands.length + 1];
         for (Integer i = 0; i < commandList.length - 1; i++) {
             commandList[i] = commands[i];
@@ -16,4 +17,5 @@ public class ParallelEventOutputBuilder extends Command{
     
         return new ParallelCommandGroup(commandList);
     }
+
 }
