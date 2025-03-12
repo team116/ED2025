@@ -106,8 +106,7 @@ public class Elevator implements Subsystem {
 
     // NOTE: Positive is "UP"
     public void move(double percentagePower) {
-        // WTF??? Inversion of motor doesn't seem to work for this motor controller
-        leftElevatorMotor.set(-percentagePower);  // 50 FIXME: Only test one motor at a time
+        leftElevatorMotor.set(percentagePower);  // 50
         rightElevatorMotor.set(percentagePower);  // 51
     }
 
