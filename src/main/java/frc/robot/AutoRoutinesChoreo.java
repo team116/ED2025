@@ -29,6 +29,18 @@ public class AutoRoutinesChoreo {
         this.intake = intake;
     }
 
+    public AutoRoutine NewPath()
+    {
+        final AutoRoutine routine = autoFactory.newRoutine("New Path");
+        final AutoTrajectory newTraj = routine.trajectory("NewPath");
+
+        routine.active().onTrue(
+            newTraj.resetOdometry()
+                .andThen(newTraj.cmd())
+        );
+        return routine;
+    }
+
     public AutoRoutine simplePathAuto() {
         final AutoRoutine routine = autoFactory.newRoutine("SimplePath Auto");
         final AutoTrajectory simplePath = routine.trajectory("SimplePath");
