@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToAbsoluteEncoderAngle;
 import frc.robot.commands.ParallelEventOutputBuilder;
+import frc.robot.autos.primitives.ConsumeGamePieceCommand;
 import frc.robot.autos.primitives.ExpelGamePieceCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
@@ -61,7 +62,6 @@ public class AutoRoutinesChoreo {
 
         return routine;
     }
-
     public AutoRoutine redStraightEasy() {
         final AutoRoutine routine = autoFactory.newRoutine("My Awesome Red Routine");
         final AutoTrajectory redStraightTraj = routine.trajectory("RedStraight");
@@ -124,6 +124,7 @@ public class AutoRoutinesChoreo {
 
         redLeftTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red left", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE))); 
         
+
         redLeftTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red left", new ExpelGamePieceCommand(intake,2.0d)));
         
         redLeftTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done red left"));
@@ -173,6 +174,80 @@ public class AutoRoutinesChoreo {
         redRightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red right", new ExpelGamePieceCommand(intake,2.0d)));
 
         redRightTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done red right"));
+
+        return routine;
+    }
+
+    public AutoRoutine blueLeftAlgae() {
+        final AutoRoutine routine = autoFactory.newRoutine("Left Bound Blue Alliance Algae");
+        final AutoTrajectory startBlueLeftAlgaeTraj = routine.trajectory("BlueLeftAlgae");
+        final AutoTrajectory consumeBlueLeftAlgaeTraj = routine.trajectory("BlueLeftAlgaeConsume");
+        final AutoTrajectory placeBlueLeftAlgaeTraj = routine.trajectory("BlueLeftAlgaePlace");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                startBlueLeftAlgaeTraj.resetOdometry(),
+                startBlueLeftAlgaeTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event","Starting blue left algae")))
+            );
+        
+        startBlueLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue left algae", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
+
+        startBlueLeftAlgaeTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue left algae", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+
+        startBlueLeftAlgaeTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue left algae", new ExpelGamePieceCommand(intake, 2.0d)));
+
+        startBlueLeftAlgaeTraj.done().onTrue(consumeBlueLeftAlgaeTraj.cmd());
+
+        consumeBlueLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending and intaking blue left algae", Commands.sequence(
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_3_ALGAE_DISLODGE_POSITION),
+            new ConsumeGamePieceCommand(intake, 2.0d)
+        )));
+
+        consumeBlueLeftAlgaeTraj.done().onTrue(placeBlueLeftAlgaeTraj.cmd());
+
+        placeBlueLeftAlgaeTraj.atTime("Retract").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Retracting blue left algae", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.BOTTOM_POSITION)));
+
+        placeBlueLeftAlgaeTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue left algae", new ExpelGamePieceCommand(intake, 2.0d)));
+
+        placeBlueLeftAlgaeTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event","Done blue left algae")));
+
+        return routine;
+    }
+
+    public AutoRoutine redLeftAlgae() {
+        final AutoRoutine routine = autoFactory.newRoutine("Left Bound Red Alliance Algae");
+        final AutoTrajectory startRedLeftAlgaeTraj = routine.trajectory("RedLeftAlgae");
+        final AutoTrajectory consumeRedLeftAlgaeTraj = routine.trajectory("RedLeftAlgaeConsume");
+        final AutoTrajectory placeRedLeftAlgaeTraj = routine.trajectory("RedLeftAlgaePlace");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                startRedLeftAlgaeTraj.resetOdometry(),
+                startRedLeftAlgaeTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event","Starting red left algae")))
+            );
+        
+        startRedLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending red left algae", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
+
+        startRedLeftAlgaeTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red left algae", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+
+        startRedLeftAlgaeTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red left algae", new ExpelGamePieceCommand(intake, 2.0d)));
+
+        startRedLeftAlgaeTraj.done().onTrue(consumeRedLeftAlgaeTraj.cmd());
+
+        consumeRedLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending and intaking red left algae", Commands.sequence(
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_3_ALGAE_DISLODGE_POSITION),
+            new ConsumeGamePieceCommand(intake, 2.0d)
+        )));
+
+        consumeRedLeftAlgaeTraj.done().onTrue(placeRedLeftAlgaeTraj.cmd());
+
+        placeRedLeftAlgaeTraj.atTime("Retract").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Retracting red left algae", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.BOTTOM_POSITION)));
+
+        placeRedLeftAlgaeTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red left algae", new ExpelGamePieceCommand(intake, 2.0d)));
+
+        placeRedLeftAlgaeTraj.done().onTrue(new InstantCommand(() -> SmartDashboard.putString("event","Done red left algae")));
 
         return routine;
     }
