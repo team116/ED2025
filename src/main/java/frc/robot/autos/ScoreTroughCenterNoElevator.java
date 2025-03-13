@@ -17,11 +17,11 @@ public class ScoreTroughCenterNoElevator extends SequentialCommandGroup {
 
         DriveDistance driveForward = new DriveDistance(commandSwerveDrivetrain, DriveDirection.FORWARD, 48, Units.Inches);
         //SendElevatorToPositionCommand elevatorUp = new SendElevatorToPositionCommand(elevator, 3.0, Elevator.LEVEL_1_POSITION);
-        SendWristToRelativeEncoderAngle wristOutStraight = new SendWristToRelativeEncoderAngle(wrist, 2.0, Wrist.WRIST_LEVEL_2_AND_3_ANGLE);
+        SendWristToRelativeEncoderAngle wristAngledUp = new SendWristToRelativeEncoderAngle(wrist, 2.0, Wrist.WRIST_TROUGH_LEVEL_FOR_AUTO);
         ExpelGamePieceCommand coralToTrough = new ExpelGamePieceCommand(intake, 2.0d);
         
         addCommands(Commands.sequence(
-            wristOutStraight,
+            wristAngledUp,
             //elevatorUp,
             driveForward,
             coralToTrough
