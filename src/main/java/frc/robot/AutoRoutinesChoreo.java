@@ -264,6 +264,53 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
+    public AutoRoutine blueCenterAlgae() {
+        AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae");
+        AutoTrajectory blueCenterTraj = routine.trajectory("BlueCenterAlgae");
+        AutoTrajectory blueCenterTakeTraj = routine.trajectory("BlueCenterAlgaeTake");
+        AutoTrajectory blueCenterPlaceTraj = routine.trajectory("BlueCenterAlgaePlace");
+        routine.active().onTrue(
+            blueCenterTraj.resetOdometry().andThen(
+                blueCenterTraj.cmd(),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Starting blue center algae"))
+            )
+        );
+
+        blueCenterTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue center algae",
+         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION))
+         );
+
+        blueCenterTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue center algae",
+         new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE))
+         );
+
+        blueCenterTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue center algae", 
+         new ExpelGamePieceCommand(intake, 2.0d))
+         );
+
+        blueCenterTraj.done().onTrue(blueCenterTakeTraj.cmd());
+
+        blueCenterTakeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue center algae",
+         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION)
+         ));
+        
+        blueCenterTakeTraj.atTime("Intake").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Intaking blue center algae",
+         new ConsumeGamePieceCommand(intake, 2.0d)
+         ));
+
+        blueCenterTakeTraj.done().onTrue(blueCenterPlaceTraj.cmd());
+
+        blueCenterPlaceTraj.atTime("Retract").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Retracting blue center algae",
+         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.BOTTOM_POSITION))
+         );
+        
+        blueCenterPlaceTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling algae blue center algae",
+         new ExpelGamePieceCommand(intake, 2.0d))
+         );
+        
+        return routine;
+    }
+
     public AutoRoutine pickupAndScoreAuto() {
         // AutoRoutine routine = autoFactory.newRoutine("pickupAndScore");
 
