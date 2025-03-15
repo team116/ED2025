@@ -14,8 +14,8 @@ public class DefaultWristCommand extends Command {
     private boolean moveRequested;
     private double desiredWristAngle;
 
-    private static final boolean HOLD_AT_ANGLE = false; // FIXME: turn this back on once we know that we have angles correct
-    private static final double EPSILON = 0.5;
+    private static final boolean HOLD_AT_ANGLE = true; // FIXME: turn this back on once we know that we have angles correct
+    private static final double EPSILON = 1.0;
 
     public DefaultWristCommand(Wrist wrist, Joystick gunnerLogitech) {
         this.wrist = wrist;
@@ -82,7 +82,11 @@ public class DefaultWristCommand extends Command {
 
         double absDiff = Math.abs(diff);
         if (absDiff < EPSILON) {
-            wrist.stop();
+            if (stallMotors) {
+                wrist.stall();
+            } else {
+                wrist.stop();
+            }
         } else {
             if (diff < 0) {
                 wrist.upSlow();
@@ -90,5 +94,9 @@ public class DefaultWristCommand extends Command {
                 wrist.downSlow();
             }
         }
+    }
+
+    public void setDesiredAngle(double desiredAngle) {
+        this.desiredWristAngle = desiredAngle;
     }
 }

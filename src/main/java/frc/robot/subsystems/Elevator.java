@@ -26,7 +26,7 @@ public class Elevator implements Subsystem {
     public static final double LEVEL_3_ALGAE_DISLODGE_POSITION = 0.0d;
     public static final double LEVEL_4_POSITION = 0.0d;
     public static final double CORAL_STATION_INTAKE_POSITION = 0.0d;
-    public static final double NET_POSITION = 0.0d;
+    public static final double NET_POSITION = 21.0d;
     public static final double BOTTOM_POSITION = 0.0d;  // This _should_ be 0.0d;
 
     private final MotorController leftElevatorMotor;
@@ -51,7 +51,7 @@ public class Elevator implements Subsystem {
             leftElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
                 .inverted(false)
-                .smartCurrentLimit(40);
+                .smartCurrentLimit(60);
 
             leftElevatorMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
@@ -71,7 +71,7 @@ public class Elevator implements Subsystem {
             rightElevatorMotorConfig
                 .idleMode(IdleMode.kBrake)
                 .inverted(false)
-                .smartCurrentLimit(40);  // inverted does NOT work
+                .smartCurrentLimit(60);  // inverted does NOT work
 
             rightElevatorMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
@@ -89,19 +89,19 @@ public class Elevator implements Subsystem {
     }
 
     public void moveUp() {
-        move(0.75d);  // FIXME: Find good speed for this
+        move(0.5d);  // FIXME: Find good speed for this
     }
 
     public void moveDown() {
-        move(-0.75d);  // FIXME: Find a good value for this
+        move(-0.25d);  // FIXME: Find a good value for this
     }
 
     public void moveUpSlow() {
-        move(0.30d);
+        move(0.20d);
     }
 
     public void moveDownSlow() {
-        move(-0.30d);
+        move(-0.1d);
     }
 
     // NOTE: Positive is "UP"
@@ -113,6 +113,10 @@ public class Elevator implements Subsystem {
     public void stop() {
         leftElevatorMotor.stopMotor();
         rightElevatorMotor.stopMotor();
+    }
+
+    public void stall() {
+        move(-0.125d);
     }
 
     public void disableLimitSwitches() {

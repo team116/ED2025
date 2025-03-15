@@ -106,6 +106,11 @@ public class RobotContainer {
 
     private static final double WRIST_TIMEOUT = 1.5d;
 
+    public final Command defaultElevatorCommand;
+    public final Command defaultWristCommand;
+    public final Command defaultIntakeCommand;
+    public final Command defaultClimberCommand;
+
     private final Command sendWristToCoralStationInputAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE);
     private final Command sendWristToLevel4NeutralAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
     private final Command sendWristToDownFullAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
@@ -209,6 +214,12 @@ public class RobotContainer {
             //climber
             climberUpButton = new JoystickButton(gunnerPad, 14); // spike up, the actual mechanism moves up, not the robot
             climberDownButton = new JoystickButton(gunnerPad, 10); //spike down, the actual mechanism moves down
+
+            defaultElevatorCommand = new DefaultElevatorCommand(elevator, gunnerLogitech);
+            defaultWristCommand = new DefaultWristCommand(wrist, gunnerLogitech);
+            defaultIntakeCommand = new DefaultIntakeCommand(intake, gunnerLogitech);
+            defaultClimberCommand = new DefaultClimberCommand(climber, gunnerPad);
+
             configureGunnerBindings();
         } else {
             gunnerPad = null;
@@ -234,6 +245,10 @@ public class RobotContainer {
             elevatorToCoralStationIntakeButton = null;
             elevatorToNetButton = null;
             elevatorToBottomButton = null;
+            defaultElevatorCommand = new InstantCommand();
+            defaultWristCommand = new InstantCommand();
+            defaultIntakeCommand = new InstantCommand();
+            defaultClimberCommand = new InstantCommand();
         }
     }
 
@@ -302,10 +317,10 @@ public class RobotContainer {
     }
 
     private void configureGunnerBindings() {
-        elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, gunnerLogitech));
-        wrist.setDefaultCommand(new DefaultWristCommand(wrist, gunnerLogitech));
-        intake.setDefaultCommand(new DefaultIntakeCommand(intake, gunnerLogitech));
-        climber.setDefaultCommand(new DefaultClimberCommand(climber, gunnerPad));
+        elevator.setDefaultCommand(defaultElevatorCommand);
+        wrist.setDefaultCommand(defaultWristCommand);
+        intake.setDefaultCommand(defaultIntakeCommand);
+        climber.setDefaultCommand(defaultClimberCommand);
 
         //wristUpButton.whileTrue(Commands.startEnd(() -> wrist.up(), () -> wrist.stop()));
         //wristDownButton.whileTrue(Commands.startEnd(() -> wrist.down(), () -> wrist.stop()));
