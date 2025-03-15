@@ -8,7 +8,7 @@ public class SendElevatorToPositionCommand extends DurationCommand {
     private final double desiredElevatorPosition;
     private boolean atDesiredPosition;
 
-    private static final double CLOSE_EPSILON = 5.0;  // FIXME: What are the position values???? raw ticks, inches, something....
+    private static final double CLOSE_EPSILON = 1.0;  // FIXME: What are the position values???? raw ticks, inches, something....
     private static final double EPSILON = 0.1;  // FIXME: What kind of slack will we accept for "at desired position"
 
     public SendElevatorToPositionCommand(Elevator elevator, double maxTimeout, double desiredElevatorPosition) {

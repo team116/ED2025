@@ -114,6 +114,13 @@ public class DefaultElevatorCommand extends Command {
 
     // NOTE: Positive value should be "DOWN" for elevator.
     private double shape(double input) {
+
+        if (input > 0.0d) {
+            input *= input;
+        } else {
+            input *= -input;
+        }
+
         if (input > 0.2d) {
             input /= 4.0;
         }

@@ -17,7 +17,7 @@ import frc.robot.stubs.DummyRelativeEncoder;
 
 public class Elevator implements Subsystem {
 
-    public static final double LEVEL_1_POSITION = 0.0d;
+    public static final double LEVEL_1_POSITION = -4.0d;
     public static final double LEVEL_2_POSITION = 0.0d;
     public static final double LEVEL_2_ALGAE_START_POSITION = 0.0d;
     public static final double LEVEL_2_ALGAE_DISLODGE_POSITION = 0.0d;
@@ -26,7 +26,7 @@ public class Elevator implements Subsystem {
     public static final double LEVEL_3_ALGAE_DISLODGE_POSITION = 0.0d;
     public static final double LEVEL_4_POSITION = 0.0d;
     public static final double CORAL_STATION_INTAKE_POSITION = 0.0d;
-    public static final double NET_POSITION = 21.0d;
+    public static final double NET_POSITION = -21.0d;
     public static final double BOTTOM_POSITION = 0.0d;  // This _should_ be 0.0d;
 
     private final MotorController leftElevatorMotor;
@@ -88,20 +88,21 @@ public class Elevator implements Subsystem {
         }
     }
 
+    // NOTE: Negative is UP!!!!!
     public void moveUp() {
-        move(0.5d);  // FIXME: Find good speed for this
+        move(-0.9d);  // FIXME: Find good speed for this
     }
 
     public void moveDown() {
-        move(-0.25d);  // FIXME: Find a good value for this
+        move(0.25d);  // FIXME: Find a good value for this
     }
 
     public void moveUpSlow() {
-        move(0.20d);
+        move(-0.6d);
     }
 
     public void moveDownSlow() {
-        move(-0.1d);
+        move(0.1d);
     }
 
     // NOTE: Positive is "UP"
@@ -115,6 +116,7 @@ public class Elevator implements Subsystem {
         rightElevatorMotor.stopMotor();
     }
 
+    // Negative UP value to hold
     public void stall() {
         move(-0.125d);
     }

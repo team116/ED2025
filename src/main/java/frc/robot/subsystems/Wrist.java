@@ -27,7 +27,7 @@ public class Wrist implements Subsystem {
     public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 170.0d;
     public static final double WRIST_LEVEL_2_AND_3_ANGLE = 130.0d;
     public static final double WRIST_DOWN_FULL_ANGLE = 250.0d;
-    public static final double WRIST_TROUGH_LEVEL_FOR_AUTO = 142.0d;
+    public static final double WRIST_TROUGH_LEVEL_FOR_AUTO = 170.0d;
 
     private final MotorController wristMotor;
     private final RelativeEncoder wristMotorEncoder;
@@ -98,7 +98,7 @@ public class Wrist implements Subsystem {
     }
 
     public void upSlow() {
-        wristMotor.set(-0.06);
+        wristMotor.set(-0.08);
     }
 
     public void downSlow() {
@@ -106,7 +106,7 @@ public class Wrist implements Subsystem {
     }
 
     public void stall() {
-        wristMotor.set(-0.02);
+        wristMotor.set(-0.04);
     }
 
     public void stop() {

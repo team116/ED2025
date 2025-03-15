@@ -24,8 +24,8 @@ public class HoldWristAtRelativeAngle extends DurationCommand {
 
     @Override
     public void initialize() {
-        wrist.stop();
-        stallMotors = false;
+        //wrist.stop();
+        stallMotors = true;
     }
 
     @Override

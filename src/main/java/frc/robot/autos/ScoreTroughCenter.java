@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.primitives.DriveDirection;
 import frc.robot.autos.primitives.DriveDistance;
 import frc.robot.autos.primitives.ExpelGamePieceCommand;
+import frc.robot.autos.primitives.HoldWristAtRelativeAngle;
 import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToRelativeEncoderAngle;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -20,13 +21,19 @@ public class ScoreTroughCenter extends SequentialCommandGroup {
         DriveDistance driveForward = new DriveDistance(commandSwerveDrivetrain, DriveDirection.FORWARD, 48, Units.Inches);
         SendElevatorToPositionCommand elevatorUp = new SendElevatorToPositionCommand(elevator, 3.0, Elevator.LEVEL_1_POSITION);
         SendWristToRelativeEncoderAngle wristOutStraight = new SendWristToRelativeEncoderAngle(wrist, 2.0, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
+        HoldWristAtRelativeAngle holdWristAtAngle = new HoldWristAtRelativeAngle(wrist, 10.0, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
         ExpelGamePieceCommand coralToTrough = new ExpelGamePieceCommand(intake, 2.0d);
         
-        addCommands(Commands.sequence(
+        addCommands(
             wristOutStraight,
-            elevatorUp,
-            driveForward,
-            coralToTrough
-        ));
+            Commands.deadline(
+                Commands.sequence(
+                    elevatorUp,
+                    driveForward,
+                    coralToTrough
+                ),
+                holdWristAtAngle
+            )
+        );
     }
 }

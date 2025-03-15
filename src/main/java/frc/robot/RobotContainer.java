@@ -37,6 +37,7 @@ import frc.robot.commands.DefaultClimberCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.DefaultWristCommand;
+import frc.robot.autos.BruteForceScoreAuto;
 import frc.robot.autos.DriveOffTheLine;
 import frc.robot.autos.ScoreTroughCenter;
 import frc.robot.autos.ScoreTroughCenterNoElevator;
@@ -173,7 +174,8 @@ public class RobotContainer {
         if (USE_MANUAL_AUTO_ROUTINES) {
             autoManual = new SendableChooser<>();
             autoManual.addOption("Drive Off The Line", new DriveOffTheLine(drivetrain));
-            //autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, elevator, intake, wrist));
+            autoManual.addOption("Brute Force Auto", new BruteForceScoreAuto(drivetrain, elevator, intake, wrist));
+            autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, elevator, intake, wrist));
             autoManual.addOption("Score Center Trough No Elevator", new ScoreTroughCenterNoElevator(drivetrain, intake, wrist));
             SmartDashboard.putData("Auto Manual", autoManual);
         }

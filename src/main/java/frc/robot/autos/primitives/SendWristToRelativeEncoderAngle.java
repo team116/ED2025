@@ -33,7 +33,7 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
 
         double absDiff = Math.abs(diff);
         if (absDiff < EPSILON) {
-            wrist.stop();
+            wrist.stall();
             atDesiredAngle = true;
         } else {
             if (diff < 0) {
