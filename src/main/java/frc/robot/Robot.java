@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import choreo.util.TrajSchemaVersion;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,7 +68,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Climber Position", m_robotContainer.climber. getEncoderPosition());
     SmartDashboard.putBoolean("Coral Limit Switch", m_robotContainer.intake.coralLimitSwitchIsPressed());
     SmartDashboard.putBoolean("Algae Limit Switch", m_robotContainer.intake.algaeLimitSwitchIsPressed());
-    m_robotContainer.intake.printMotorVoltages();
+    SmartDashboard.putString("DriveTrain ", m_robotContainer.drivetrain.getOperatorForwardDirection().toString());
+    //m_robotContainer.intake.printMotorVoltages();
 
   }
 
@@ -94,6 +99,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    // FIXME: try to put this back
+    //m_robotContainer.drivetrain.resetRotation(Rotation2d.k180deg);
+    //Pose2d rotatedPose = new Pose2d(Translation2d.kZero, Rotation2d.k180deg);
+    //m_robotContainer.drivetrain.resetPose(rotatedPose);
   }
 
   /** This function is called periodically during autonomous. */

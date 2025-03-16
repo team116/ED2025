@@ -173,6 +173,7 @@ public class RobotContainer {
 
         if (USE_MANUAL_AUTO_ROUTINES) {
             autoManual = new SendableChooser<>();
+            autoManual.addOption("Do Nothing", new InstantCommand());
             autoManual.addOption("Drive Off The Line", new DriveOffTheLine(drivetrain));
             autoManual.addOption("Brute Force Auto", new BruteForceScoreAuto(drivetrain, elevator, intake, wrist));
             autoManual.addOption("Score Center Trough", new ScoreTroughCenter(drivetrain, elevator, intake, wrist));
