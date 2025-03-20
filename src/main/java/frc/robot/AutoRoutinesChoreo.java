@@ -64,13 +64,13 @@ public class AutoRoutinesChoreo {
             )      
         );
 
-        blueStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
+        //blueStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        blueStraightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue straight", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+        //blueStraightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue straight", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
 
-        blueStraightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue straight", new ExpelGamePieceCommand(intake, 2.0d)));
+        //blueStraightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue straight", new ExpelGamePieceCommand(intake, 2.0d)));
     
-        blueStraightTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done blue straight"));
+        //blueStraightTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done blue straight"));
 
         return routine;
     }
@@ -86,11 +86,11 @@ public class AutoRoutinesChoreo {
             )      
         );
 
-        redStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending red straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
+        //redStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending red straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        redStraightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red straight", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+        //redStraightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red straight", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
 
-        redStraightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red straight", new ExpelGamePieceCommand(intake, 2.0d)));
+        //redStraightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red straight", new ExpelGamePieceCommand(intake, 2.0d)));
     
         redStraightTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done red straight"));
 

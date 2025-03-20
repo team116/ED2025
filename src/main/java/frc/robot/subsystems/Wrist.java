@@ -24,9 +24,9 @@ public class Wrist implements Subsystem {
     private static final double WRIST_DEGREES_PER_REVOLUTION = 360.0d / WRIST_GEARBOX_GEAR_RATIO;
 
     public static final double WRIST_CORAL_STATION_INTAKE_ANGLE = 120.0d;
-    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 170.0d;
+    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 140.0d;
     public static final double WRIST_LEVEL_2_AND_3_ANGLE = 130.0d;
-    public static final double WRIST_DOWN_FULL_ANGLE = 250.0d;
+    public static final double WRIST_DOWN_FULL_ANGLE = 160.0d;
     public static final double WRIST_TROUGH_LEVEL_FOR_AUTO = 170.0d;
 
     private final MotorController wristMotor;

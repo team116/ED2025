@@ -2,10 +2,11 @@ package frc.robot.autos.primitives;
 
 import java.net.Authenticator.RequestorType;
 
+import frc.robot.DesiredAngleCallback;
 import frc.robot.subsystems.Wrist;
 
 // NOTE: This will ONLY exit when the duration has expired, otherwise continues to hold the full time
-public class HoldWristAtRelativeAngle extends DurationCommand {
+public class HoldWristAtRelativeAngle extends DurationCommand implements DesiredAngleCallback {
 
     private final Wrist wrist;
 
@@ -38,7 +39,6 @@ public class HoldWristAtRelativeAngle extends DurationCommand {
     public void end(boolean interrupted){
         wrist.stop();
     }
-
     private void holdAtAngle() {
         double currentWristAngle = wrist.getRelativeAngle();
         double diff = desiredWristAngle - currentWristAngle;
@@ -57,5 +57,9 @@ public class HoldWristAtRelativeAngle extends DurationCommand {
                 wrist.downSlow();
             }
         }
+    }
+
+    public void setDesiredAngle(double desiredAngle) {
+        this.desiredWristAngle = desiredAngle;
     }
 }

@@ -53,7 +53,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
-    private static final boolean USE_MANUAL_AUTO_ROUTINES = true; //toggle between using the primitive based autos and the path planning autos
+    private static final boolean USE_MANUAL_AUTO_ROUTINES = false; //toggle between using the primitive based autos and the path planning autos
     private static final boolean GUNNER_CONTROLS_CONNECTED = true; //leave true, assume there is a driver station
     private static final String AUTO_MODE_KEY = "AutoMode";
     private double MaxSpeed = (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)) / 2.0d; // kSpeedAt12Volts desired top speed
@@ -112,10 +112,10 @@ public class RobotContainer {
     public final Command defaultIntakeCommand;
     public final Command defaultClimberCommand;
 
-    private final Command sendWristToCoralStationInputAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE);
-    private final Command sendWristToLevel4NeutralAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
-    private final Command sendWristToDownFullAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
-    private final Command sendWristToLevel2And3Angle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
+    private final Command sendWristToCoralStationInputAngle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE);
+    private final Command sendWristToLevel4NeutralAngle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
+    private final Command sendWristToDownFullAngle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
+    private final Command sendWristToLevel2And3Angle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
 
     private static final double ELEVATOR_TIMEOUT = 2.0d;
 
@@ -151,17 +151,17 @@ public class RobotContainer {
             AutoFactory autoFactoryChoreo = drivetrainChoreo.createAutoFactory();
             AutoRoutinesChoreo autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo, elevator, wrist, intake);
 
-            autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
+            //autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
             autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueStraightEasy);
             autoChooserChoreo.addRoutine("Blue Left", autoRoutinesChoreo::blueLeftEasy);
             autoChooserChoreo.addRoutine("Blue Right", autoRoutinesChoreo::blueRightEasy);
-            autoChooserChoreo.addRoutine("Red Center", autoRoutinesChoreo::redStraightEasy);
-            autoChooserChoreo.addRoutine("Red Left", autoRoutinesChoreo::redLeftEasy);
-            autoChooserChoreo.addRoutine("Red Right", autoRoutinesChoreo::redRightEasy);
+            //autoChooserChoreo.addRoutine("Red Center", autoRoutinesChoreo::redStraightEasy);
+            //autoChooserChoreo.addRoutine("Red Left", autoRoutinesChoreo::redLeftEasy);
+            //autoChooserChoreo.addRoutine("Red Right", autoRoutinesChoreo::redRightEasy);
             autoChooserChoreo.addRoutine("Blue Left Algae", autoRoutinesChoreo::blueLeftAlgae);
-            autoChooserChoreo.addRoutine("Red Left Algae", autoRoutinesChoreo::redLeftAlgae);
+            //autoChooserChoreo.addRoutine("Red Left Algae", autoRoutinesChoreo::redLeftAlgae);
             autoChooserChoreo.addRoutine("Blue Center Algae", autoRoutinesChoreo::blueCenterAlgae);
-            autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
+            //autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
 
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);
         }
@@ -224,6 +224,18 @@ public class RobotContainer {
             defaultIntakeCommand = new DefaultIntakeCommand(intake, gunnerLogitech);
             defaultClimberCommand = new DefaultClimberCommand(climber, gunnerPad);
 
+            if (defaultWristCommand instanceof DesiredAngleCallback desiredAngleCallback) {
+                sendWristToCoralStationInputAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE, desiredAngleCallback);
+                sendWristToLevel4NeutralAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE, desiredAngleCallback);
+                sendWristToDownFullAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE, desiredAngleCallback);
+                sendWristToLevel2And3Angle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_2_AND_3_ANGLE, desiredAngleCallback);
+            } else {
+                sendWristToCoralStationInputAngle = new InstantCommand();
+                sendWristToLevel4NeutralAngle = new InstantCommand();
+                sendWristToDownFullAngle = new InstantCommand();
+                sendWristToLevel2And3Angle = new InstantCommand();
+            }
+
             configureGunnerBindings();
         } else {
             gunnerPad = null;
@@ -253,6 +265,10 @@ public class RobotContainer {
             defaultWristCommand = new InstantCommand();
             defaultIntakeCommand = new InstantCommand();
             defaultClimberCommand = new InstantCommand();
+            sendWristToCoralStationInputAngle = new InstantCommand();
+            sendWristToLevel4NeutralAngle = new InstantCommand();
+            sendWristToDownFullAngle = new InstantCommand();
+            sendWristToLevel2And3Angle = new InstantCommand();
         }
     }
 
