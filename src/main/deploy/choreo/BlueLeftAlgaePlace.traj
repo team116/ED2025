@@ -125,6 +125,6 @@
   "splits":[0]
  },
  "events":[
-   {"name":"Retract", "from":{"target":1, "targetTimestamp":3.84453, "offset":{"exp":"1.5 s", "val":1.5}}, "event":null},
+   {"name":"Retract", "from":{"target":1, "targetTimestamp":3.84453, "offset":{"exp":"-1.5 s", "val":-1.5}}, "event":null},
    {"name":"Expel", "from":{"target":1, "targetTimestamp":3.84453, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }

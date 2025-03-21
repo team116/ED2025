@@ -285,7 +285,7 @@ public class AutoRoutinesChoreo {
          );
 
         blueCenterTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue center algae", 
-         new ExpelGamePieceCommand(intake, 2.0d))
+         new ExpelGamePieceCommand(intake, 0.5d))
          );
 
         blueCenterTraj.done().onTrue(blueCenterTakeTraj.cmd());
@@ -295,16 +295,20 @@ public class AutoRoutinesChoreo {
          ));
         
         blueCenterTakeTraj.atTime("Intake").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Intaking blue center algae",
-         new ConsumeGamePieceCommand(intake, 2.0d)
+         new ConsumeGamePieceCommand(intake, 0.5d)
          ));
 
         blueCenterTakeTraj.done().onTrue(blueCenterPlaceTraj.cmd());
 
-        blueCenterPlaceTraj.atTime("Retract").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Retracting blue center algae",
-         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.BOTTOM_POSITION))
+        blueCenterPlaceTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending net blue center algae",
+         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.NET_POSITION))
          );
         
-        blueCenterPlaceTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling algae blue center algae",
+        blueCenterPlaceTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating net blue center algae", 
+         new SendWristToAbsoluteEncoderAngle(wrist,1.0d,Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE)
+        ));
+        
+        blueCenterPlaceTraj.atTime("Vomit").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Vomitting algae blue center algae",
          new ExpelGamePieceCommand(intake, 2.0d))
          );
         
