@@ -36,7 +36,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    m_robotContainer.wrist.resetRelativeEncoder();
   }
 
   /**
@@ -99,6 +98,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.wrist.resetRelativeEncoder();
 
     // FIXME: try to put this back
     //m_robotContainer.drivetrain.resetRotation(Rotation2d.k180deg);

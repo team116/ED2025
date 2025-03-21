@@ -3,9 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.StallOnInit;
 import frc.robot.subsystems.Elevator;
 
-public class DefaultElevatorCommand extends Command {
+public class DefaultElevatorCommand extends Command implements StallOnInit {
 
     private final Elevator elevator;
     private final Joystick gunnerLogitech;
@@ -13,6 +14,7 @@ public class DefaultElevatorCommand extends Command {
     private boolean moveRequested;
     private double desiredPosition;
     private boolean stallMotors;
+    private boolean stallOnInit = false;
 
     private static final boolean HOLD_AT_POSITION = false;
     private static final double EPSILON = 1.0;
@@ -25,8 +27,12 @@ public class DefaultElevatorCommand extends Command {
 
     @Override
     public void initialize() {
-        elevator.stop();
-        stallMotors = false;
+        if (stallOnInit) {
+            elevator.stall();
+        } else {
+            elevator.stop();
+        }
+        stallMotors = stallOnInit;
         moveRequested = false;
         desiredPosition = elevator.getEncoderPosition();
         SmartDashboard.putBoolean("elevator stall", false);
@@ -70,9 +76,11 @@ public class DefaultElevatorCommand extends Command {
         if (gunnerLogitech.getPOV() == 270) {
             SmartDashboard.putBoolean("elevator stall", true);
             stallMotors = true;
+            stallOnInit = true;
         } else if (gunnerLogitech.getPOV() == 90) {
             SmartDashboard.putBoolean("elevator stall", false);
             stallMotors = false;
+            stallOnInit = false;
         }
     }
 
@@ -126,5 +134,9 @@ public class DefaultElevatorCommand extends Command {
         }
 
         return input;
+    }
+
+    public void setStallOnInit(boolean doStall) {
+        stallOnInit = doStall;
     }
 }

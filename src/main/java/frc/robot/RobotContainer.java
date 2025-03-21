@@ -119,13 +119,13 @@ public class RobotContainer {
 
     private static final double ELEVATOR_TIMEOUT = 2.0d;
 
-    private final Command sendElevatorToLevel1 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_1_POSITION);
-    private final Command sendElevatorToLevel2 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_2_POSITION);
-    private final Command sendElevatorToLevel3 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_3_POSITION);
-    private final Command sendElevatorToLevel4 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_4_POSITION);
-    private final Command sendElevatorToCoralStationIntake = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.CORAL_STATION_INTAKE_POSITION);
-    private final Command sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION);
-    private final Command sendElevatorToBottom = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.BOTTOM_POSITION);
+    private final Command sendElevatorToLevel1;
+    private final Command sendElevatorToLevel2;
+    private final Command sendElevatorToLevel3;
+    private final Command sendElevatorToLevel4;
+    private final Command sendElevatorToCoralStationIntake;
+    private final Command sendElevatorToNet;
+    private final Command sendElevatorToBottom;
 
     private boolean slowModeActive = false;
 
@@ -236,6 +236,23 @@ public class RobotContainer {
                 sendWristToLevel2And3Angle = new InstantCommand();
             }
 
+            if (defaultElevatorCommand instanceof StallOnInit stallOnInitCallback) {
+                sendElevatorToLevel1 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_1_POSITION, stallOnInitCallback);
+                sendElevatorToLevel2 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION, stallOnInitCallback);
+                sendElevatorToLevel3 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_3_ALGAE_DISLODGE_POSITION, stallOnInitCallback);
+                sendElevatorToLevel4 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_4_POSITION, stallOnInitCallback);
+                sendElevatorToCoralStationIntake = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.CORAL_STATION_INTAKE_POSITION, stallOnInitCallback);
+                sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION, stallOnInitCallback);
+                sendElevatorToBottom = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.BOTTOM_POSITION, stallOnInitCallback);
+            } else {
+                sendElevatorToLevel1 = new InstantCommand();
+                sendElevatorToLevel2 = new InstantCommand();
+                sendElevatorToLevel3 = new InstantCommand();
+                sendElevatorToLevel4 = new InstantCommand();
+                sendElevatorToCoralStationIntake = new InstantCommand();
+                sendElevatorToNet = new InstantCommand();
+                sendElevatorToBottom = new InstantCommand();
+            }
             configureGunnerBindings();
         } else {
             gunnerPad = null;
@@ -269,6 +286,13 @@ public class RobotContainer {
             sendWristToLevel4NeutralAngle = new InstantCommand();
             sendWristToDownFullAngle = new InstantCommand();
             sendWristToLevel2And3Angle = new InstantCommand();
+            sendElevatorToLevel1 = new InstantCommand();
+            sendElevatorToLevel2 = new InstantCommand();
+            sendElevatorToLevel3 = new InstantCommand();
+            sendElevatorToLevel4 = new InstantCommand();
+            sendElevatorToCoralStationIntake = new InstantCommand();
+            sendElevatorToNet = new InstantCommand();
+            sendElevatorToBottom = new InstantCommand();
         }
     }
 
@@ -372,26 +396,26 @@ public class RobotContainer {
         wristFullyDownAngleButton.onTrue(sendWristToDownFullAngle);
         wristLevel2And3AngleButton.onTrue(sendWristToLevel2And3Angle);
 
-        //elevatorToBottomButton.onTrue(sendElevatorToBottom);
+        elevatorToBottomButton.onTrue(sendElevatorToBottom);
         //elevatorToCoralStationIntakeButton.onTrue(sendElevatorToCoralStationIntake);
-        //elevatorToLevel1Button.onTrue(sendElevatorToLevel1);
-        //elevatorToLevel2Button.onTrue(sendElevatorToLevel2);
-        //elevatorToLevel3Button.onTrue(sendElevatorToLevel3);
+        elevatorToLevel1Button.onTrue(sendElevatorToLevel1);
+        elevatorToLevel2Button.onTrue(sendElevatorToLevel2);
+        elevatorToLevel3Button.onTrue(sendElevatorToLevel3);
         //elevatorToLevel4Button.onTrue(sendElevatorToLevel4);
-        //elevatorToNetButton.onTrue(sendElevatorToNet);
+        elevatorToNetButton.onTrue(sendElevatorToNet);
 
-        // cancelAllMacrosButton
-        //     .onTrue(Commands.runOnce(() -> sendWristToCoralStationInputAngle.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendWristToLevel4NeutralAngle.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendWristToDownFullAngle.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendWristToLevel2And3Angle.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToBottom.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToCoralStationIntake.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel1.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel2.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel3.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToLevel4.cancel()))
-        //     .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()));
+        cancelAllMacrosButton
+            .onTrue(Commands.runOnce(() -> sendWristToCoralStationInputAngle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendWristToLevel4NeutralAngle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendWristToDownFullAngle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendWristToLevel2And3Angle.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToBottom.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToCoralStationIntake.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel1.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel2.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel3.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToLevel4.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()));
     }
 
     public Command getAutonomousCommand() {

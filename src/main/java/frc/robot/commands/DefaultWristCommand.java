@@ -27,7 +27,7 @@ public class DefaultWristCommand extends Command implements DesiredAngleCallback
     @Override
     public void initialize() {
         wrist.stop();
-        stallMotors = false;
+        stallMotors = true;
         moveRequested = false;
         desiredWristAngle = wrist.getRelativeAngle();
     }
@@ -36,12 +36,16 @@ public class DefaultWristCommand extends Command implements DesiredAngleCallback
     public void execute() {
         super.execute();
         checkStallMotors();
+
+        //double manualMoveRequest = gunnerLogitech.getRawAxis(3);
         
         if (gunnerLogitech.getRawButton(9)) {
-            wrist.up();
+            wrist.up();  // FIXME: Put this back
+            //wrist.setPower(Math.min(manualMoveRequest, 0));
             moveRequested = true;
         } else if (gunnerLogitech.getRawButton(10)) {
-            wrist.down();
+            //wrist.setPower(Math.max(0, manualMoveRequest));
+            wrist.down();  // FIXME: Put this back
             moveRequested = true;
         } else {
             if (moveRequested) {
@@ -50,6 +54,8 @@ public class DefaultWristCommand extends Command implements DesiredAngleCallback
             
             moveRequested = false;
         }
+
+        //SmartDashboard.putNumber("wrist power", manualMoveRequest);
 
         if (!moveRequested) {
             if (HOLD_AT_ANGLE) {

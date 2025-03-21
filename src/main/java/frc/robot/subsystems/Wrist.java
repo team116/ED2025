@@ -24,7 +24,7 @@ public class Wrist implements Subsystem {
     private static final double WRIST_DEGREES_PER_REVOLUTION = 360.0d / WRIST_GEARBOX_GEAR_RATIO;
 
     public static final double WRIST_CORAL_STATION_INTAKE_ANGLE = 120.0d;
-    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 140.0d;
+    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 173.0d;
     public static final double WRIST_LEVEL_2_AND_3_ANGLE = 130.0d;
     public static final double WRIST_DOWN_FULL_ANGLE = 160.0d;
     public static final double WRIST_TROUGH_LEVEL_FOR_AUTO = 170.0d;
@@ -90,23 +90,27 @@ public class Wrist implements Subsystem {
     }
 
     public void up() {
-        wristMotor.set(-0.16);
+        wristMotor.set(-0.12);
     }
 
     public void down() {
-        wristMotor.set(0.08);
+        wristMotor.set(0.065);
     }
 
     public void upSlow() {
-        wristMotor.set(-0.08);
+        wristMotor.set(-0.046);
     }
 
     public void downSlow() {
-        wristMotor.set(0.04);
+        wristMotor.set(0.02);
     }
 
     public void stall() {
-        wristMotor.set(-0.04);
+        wristMotor.set(-0.0234);
+    }
+
+    public void setPower(double powerPercentage) {
+        wristMotor.set(powerPercentage);
     }
 
     public void stop() {
