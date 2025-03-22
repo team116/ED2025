@@ -35,7 +35,7 @@ public class Climber implements Subsystem {
             climberMotorConfig.limitSwitch
                 .forwardLimitSwitchType(Type.kNormallyClosed)
                 .reverseLimitSwitchType(Type.kNormallyClosed)
-                .forwardLimitSwitchEnabled(false)  // FIXME: Set to true for correct one...
+                .forwardLimitSwitchEnabled(true)  // FIXME: Set to true for correct one...
                 .reverseLimitSwitchEnabled(false);
 
             climberMotor.configure(climberMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

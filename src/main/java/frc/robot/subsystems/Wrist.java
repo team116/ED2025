@@ -23,11 +23,16 @@ public class Wrist implements Subsystem {
     private static final double WRIST_GEARBOX_GEAR_RATIO = 36.0d/1.0d;  // 36:1
     private static final double WRIST_DEGREES_PER_REVOLUTION = 360.0d / WRIST_GEARBOX_GEAR_RATIO;
 
-    public static final double WRIST_CORAL_STATION_INTAKE_ANGLE = 120.0d;
-    public static final double WRIST_LEVEL_4_NEUTRAL_ANGLE = 173.0d;
-    public static final double WRIST_LEVEL_2_AND_3_ANGLE = 130.0d;
-    public static final double WRIST_DOWN_FULL_ANGLE = 160.0d;
+    public static final double WRIST_BARGE_SCORE_ANGLE = 116.0d;
+    public static final double WRIST_STRAIGHT_OUT_ANGLE = 173.0d;
+    public static final double WRIST_PROCESSOR_SCORE_ANGLE = 160.0d;
+    public static final double WRIST_GROUND_PICKUP_ANGLE = 190.0d;
     public static final double WRIST_TROUGH_LEVEL_FOR_AUTO = 170.0d;
+
+    // 5 - Barge steep, up 116.0
+    // 6 - Flat, about 173
+    // 8 - Ground pickup
+    // 7 - Processor
 
     private final MotorController wristMotor;
     private final RelativeEncoder wristMotorEncoder;

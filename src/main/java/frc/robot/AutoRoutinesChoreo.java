@@ -111,7 +111,7 @@ public class AutoRoutinesChoreo {
 
         blueLeftTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue left", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        blueLeftTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue left", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE))); 
+        blueLeftTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue left", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE))); 
         
         blueLeftTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue left", new ExpelGamePieceCommand(intake,2.0d)));
         
@@ -134,7 +134,7 @@ public class AutoRoutinesChoreo {
 
         redLeftTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending red left", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        redLeftTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red left", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE))); 
+        redLeftTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red left", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE))); 
         
 
         redLeftTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red left", new ExpelGamePieceCommand(intake,2.0d)));
@@ -158,7 +158,7 @@ public class AutoRoutinesChoreo {
 
         blueRightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue right", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        blueRightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue right", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+        blueRightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue right", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE)));
 
         blueRightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue right", new ExpelGamePieceCommand(intake,2.0d)));
 
@@ -181,7 +181,7 @@ public class AutoRoutinesChoreo {
 
         redRightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending red right", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        redRightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red right", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+        redRightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red right", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE)));
 
         redRightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red right", new ExpelGamePieceCommand(intake,2.0d)));
 
@@ -205,7 +205,7 @@ public class AutoRoutinesChoreo {
         
         startBlueLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue left algae", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        startBlueLeftAlgaeTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue left algae", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+        startBlueLeftAlgaeTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue left algae", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE)));
 
         startBlueLeftAlgaeTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue left algae", new ExpelGamePieceCommand(intake, 2.0d)));
 
@@ -242,7 +242,7 @@ public class AutoRoutinesChoreo {
         
         startRedLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending red left algae", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
 
-        startRedLeftAlgaeTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red left algae", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
+        startRedLeftAlgaeTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating red left algae", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE)));
 
         startRedLeftAlgaeTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling red left algae", new ExpelGamePieceCommand(intake, 2.0d)));
 
@@ -281,7 +281,7 @@ public class AutoRoutinesChoreo {
          );
 
         blueCenterTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue center algae",
-         new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE))
+         new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE))
          );
 
         blueCenterTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue center algae", 
@@ -305,7 +305,7 @@ public class AutoRoutinesChoreo {
          );
         
         blueCenterPlaceTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating net blue center algae", 
-         new SendWristToAbsoluteEncoderAngle(wrist,1.0d,Wrist.WRIST_CORAL_STATION_INTAKE_ANGLE)
+         new SendWristToAbsoluteEncoderAngle(wrist,1.0d,Wrist.WRIST_BARGE_SCORE_ANGLE)
         ));
         
         blueCenterPlaceTraj.atTime("Vomit").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Vomitting algae blue center algae",

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.StallOnInit;
 import frc.robot.subsystems.Elevator;
 
@@ -10,6 +11,7 @@ public class DefaultElevatorCommand extends Command implements StallOnInit {
 
     private final Elevator elevator;
     private final Joystick gunnerLogitech;
+    private final Joystick gunnerPad;
 
     private boolean moveRequested;
     private double desiredPosition;
@@ -19,9 +21,10 @@ public class DefaultElevatorCommand extends Command implements StallOnInit {
     private static final boolean HOLD_AT_POSITION = false;
     private static final double EPSILON = 1.0;
 
-    public DefaultElevatorCommand(Elevator elevator, Joystick gunnerLogitech) {
+    public DefaultElevatorCommand(Elevator elevator, Joystick gunnerLogitech, Joystick gunnerPad) {
         this.elevator = elevator;
         this.gunnerLogitech = gunnerLogitech;
+        this.gunnerPad = gunnerPad;
         addRequirements(elevator);
     }
 
@@ -35,7 +38,7 @@ public class DefaultElevatorCommand extends Command implements StallOnInit {
         stallMotors = stallOnInit;
         moveRequested = false;
         desiredPosition = elevator.getEncoderPosition();
-        SmartDashboard.putBoolean("elevator stall", false);
+        SmartDashboard.putBoolean("elevator stall", stallMotors);
     }
 
     @Override
@@ -45,10 +48,16 @@ public class DefaultElevatorCommand extends Command implements StallOnInit {
 
         double adjustedWithDeadBand = withDeadband(shape(-gunnerLogitech.getY()));
         //elevator.move(withDeadband(-gunnerLogitech.getY()));
+        if (gunnerPad.getRawButton(5)) {
+            adjustedWithDeadBand = -0.195d;
+        }
+        if (gunnerPad.getRawButton(6)) {
+            adjustedWithDeadBand = 0.011d;
+        }
 
         SmartDashboard.putNumber("elevator power", adjustedWithDeadBand);
 
-        if (adjustedWithDeadBand >= 0.02d || adjustedWithDeadBand <= -0.02d) {
+        if (adjustedWithDeadBand >= 0.01d || adjustedWithDeadBand <= -0.01d) {
             moveRequested = true;
             elevator.move(adjustedWithDeadBand);
         } else {

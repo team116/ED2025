@@ -58,3 +58,12 @@ All REVLib
 
 ## Misc
 - distance sensor (??)
+
+# GamePad Buttons
+     [-0]
+     [+1] [-1]
+     [+0]
+[02] [01] [11]
+[12] [03] [04]
+     [08] [06]
+     [07] [05]
