@@ -39,6 +39,7 @@ public class HoldWristAtRelativeAngle extends DurationCommand implements Desired
     public void end(boolean interrupted){
         wrist.stop();
     }
+
     private void holdAtAngle() {
         double currentWristAngle = wrist.getRelativeAngle();
         double diff = desiredWristAngle - currentWristAngle;

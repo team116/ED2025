@@ -100,6 +100,11 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.wrist.resetRelativeEncoder();
+    m_robotContainer.elevator.resetEncoderPosition();
+
+    if (m_robotContainer.autoRoutinesChoreo != null) {
+      m_robotContainer.autoRoutinesChoreo.clearTriggers();
+    }
 
     // FIXME: try to put this back
     //m_robotContainer.drivetrain.resetRotation(Rotation2d.k180deg);

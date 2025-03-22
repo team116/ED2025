@@ -144,12 +144,13 @@ public class RobotContainer {
     private AutoChooser autoChooserChoreo;
     private SendableChooser<Command> autoChooserPathPlanner;
     private SendableChooser<Command> autoManual;
+    public AutoRoutinesChoreo autoRoutinesChoreo;
 
     public RobotContainer() {
         if (drivetrain instanceof CommandSwerveDrivetrainChoreo drivetrainChoreo) {
             autoChooserChoreo = new AutoChooser();
             AutoFactory autoFactoryChoreo = drivetrainChoreo.createAutoFactory();
-            AutoRoutinesChoreo autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo, elevator, wrist, intake);
+            autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo, elevator, wrist, intake);
 
             //autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
             autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueStraightEasy);
@@ -237,9 +238,9 @@ public class RobotContainer {
             }
 
             if (defaultElevatorCommand instanceof StallOnInit stallOnInitCallback) {
-                sendElevatorToLowerAlgae = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION, stallOnInitCallback);
+                sendElevatorToLowerAlgae = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LOWER_ALGAE_POSITION, stallOnInitCallback);
                 //sendElevatorToLevel2 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION, stallOnInitCallback);
-                sendElevatorToUpperAlgae = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_3_ALGAE_DISLODGE_POSITION, stallOnInitCallback);
+                sendElevatorToUpperAlgae = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.UPPER_ALGAE_POSITION, stallOnInitCallback);
                 //sendElevatorToLevel4 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_4_POSITION, stallOnInitCallback);
                 //sendElevatorToCoralStationIntake = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.CORAL_STATION_INTAKE_POSITION, stallOnInitCallback);
                 sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION, stallOnInitCallback);

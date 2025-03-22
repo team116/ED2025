@@ -1,18 +1,22 @@
 package frc.robot;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToAbsoluteEncoderAngle;
 import frc.robot.autos.primitives.SendWristToRelativeEncoderAngle;
 import frc.robot.commands.ParallelEventOutputBuilder;
 import frc.robot.autos.primitives.ConsumeGamePieceCommand;
+import frc.robot.autos.primitives.DurationCommand;
 import frc.robot.autos.primitives.ExpelGamePieceCommand;
+import frc.robot.autos.primitives.HoldElevatorAtPosition;
 import frc.robot.autos.primitives.HoldWristAtRelativeAngle;
 import frc.robot.autos.primitives.MoveWrist;
 import frc.robot.subsystems.Elevator;
@@ -58,8 +62,6 @@ public class AutoRoutinesChoreo {
     public AutoRoutine blueStraightEasy() {
         final AutoRoutine routine = autoFactory.newRoutine("My Awesome Blue Routine");
         final AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraight");
-        final AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraight2");
-        final AutoTrajectory blueStraightTraj3 = routine.trajectory("BlueStraight3");
 
         routine.active().onTrue(
             Commands.sequence(
@@ -75,31 +77,14 @@ public class AutoRoutinesChoreo {
                 Commands.sequence(
                     new MoveWrist(wrist, 1.0, true),
                     new ExpelGamePieceCommand(intake, 0.5),
-                    new MoveWrist(wrist, 1.0, false),
-                    blueStraightTraj2.cmd()
+                    new MoveWrist(wrist, 1.0, false)
                 )
             )
         );
 
-        blueStraightTraj2.atTime("Extend").onTrue(
-            ParallelEventOutputBuilder.parallelPutEvent(
-                "Grab algae",
-                Commands.sequence(
-                    new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
-                    new SendElevatorToPositionCommand(elevator, 2.0, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION),
-                    Commands.runOnce(() -> intake.consume()),
-                    blueStraightTraj3.cmd()
-                ))
-        );
-
-        //blueStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
-        //blueStraightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue straight", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
-        //blueStraightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue straight", new ExpelGamePieceCommand(intake, 2.0d)));
-    
-        //blueStraightTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done blue straight"));
-
         return routine;
     }
+
     public AutoRoutine redStraightEasy() {
         final AutoRoutine routine = autoFactory.newRoutine("My Awesome Red Routine");
         final AutoTrajectory redStraightTraj = routine.trajectory("RedStraight");
@@ -238,7 +223,7 @@ public class AutoRoutinesChoreo {
         startBlueLeftAlgaeTraj.done().onTrue(consumeBlueLeftAlgaeTraj.cmd());
 
         consumeBlueLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending and intaking blue left algae", Commands.sequence(
-            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_3_ALGAE_DISLODGE_POSITION),
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.UPPER_ALGAE_POSITION),
             new ConsumeGamePieceCommand(intake, 2.0d)
         )));
 
@@ -275,7 +260,7 @@ public class AutoRoutinesChoreo {
         startRedLeftAlgaeTraj.done().onTrue(consumeRedLeftAlgaeTraj.cmd());
 
         consumeRedLeftAlgaeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending and intaking red left algae", Commands.sequence(
-            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_3_ALGAE_DISLODGE_POSITION),
+            new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.UPPER_ALGAE_POSITION),
             new ConsumeGamePieceCommand(intake, 2.0d)
         )));
 
@@ -290,54 +275,61 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
+    private AtomicBoolean isDone1 = new AtomicBoolean(false);
+    private Trigger done1 = new Trigger(() -> isDone1.get());
+    private AtomicBoolean isDone2 = new AtomicBoolean(false);
+    private Trigger done2 = new Trigger(() -> isDone2.get()); 
+
+    public void clearTriggers() {
+        isDone1.set(false);
+        isDone2.set(false);
+    }
+
     public AutoRoutine blueCenterAlgae() {
         AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae");
-        AutoTrajectory blueCenterTraj = routine.trajectory("BlueCenterAlgae");
-        AutoTrajectory blueCenterTakeTraj = routine.trajectory("BlueCenterAlgaeTake");
-        AutoTrajectory blueCenterPlaceTraj = routine.trajectory("BlueCenterAlgaePlace");
+        AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraightAlgae");
+        AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraightAlgae2");
+        AutoTrajectory blueStraightTraj3 = routine.trajectory("BlueStraightAlgae3");
         routine.active().onTrue(
-            blueCenterTraj.resetOdometry().andThen(
-                blueCenterTraj.cmd(),
+            blueStraightTraj.resetOdometry().andThen(
+                blueStraightTraj.cmd(),
                 new InstantCommand(() -> SmartDashboard.putString("event", "Starting blue center algae"))
             )
         );
 
-        blueCenterTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue center algae",
-         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION))
-         );
+        blueStraightTraj.done().onTrue(
+            Commands.sequence(
+                new MoveWrist(wrist, 1.0, true),
+                new ExpelGamePieceCommand(intake, 0.5),
+                new MoveWrist(wrist, 1.0, false),
+                new InstantCommand(() -> isDone1.set(true))
+            )
+        );
 
-        blueCenterTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue center algae",
-         new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_STRAIGHT_OUT_ANGLE))
-         );
+        routine.observe(done1).onTrue(blueStraightTraj2.cmd());
 
-        blueCenterTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue center algae", 
-         new ExpelGamePieceCommand(intake, 0.5d))
-         );
+        blueStraightTraj2.done().onTrue(
+            Commands.sequence(
+                new SendWristToRelativeEncoderAngle(wrist, 3.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new SendElevatorToPositionCommand(elevator, 8.0, Elevator.LOWER_ALGAE_POSITION),
+                new InstantCommand(() -> intake.consume()),
+                new InstantCommand(() -> isDone2.set(true))
+            )
+        );
 
-        blueCenterTraj.done().onTrue(blueCenterTakeTraj.cmd());
+        routine.observe(done2).onTrue(blueStraightTraj3.cmd());
 
-        blueCenterTakeTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue center algae",
-         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION)
-         ));
-        
-        blueCenterTakeTraj.atTime("Intake").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Intaking blue center algae",
-         new ConsumeGamePieceCommand(intake, 0.5d)
-         ));
+        blueStraightTraj3.done().onTrue(
+          new DurationCommand(5.0)  
+        );
 
-        blueCenterTakeTraj.done().onTrue(blueCenterPlaceTraj.cmd());
+        blueStraightTraj3.active().onTrue(
+            Commands.parallel(
+                new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new HoldElevatorAtPosition(elevator, Double.MAX_VALUE, Elevator.LOWER_ALGAE_POSITION)
+            )
+        );
 
-        blueCenterPlaceTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending net blue center algae",
-         new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.NET_POSITION))
-         );
-        
-        blueCenterPlaceTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating net blue center algae", 
-         new SendWristToAbsoluteEncoderAngle(wrist,1.0d,Wrist.WRIST_BARGE_SCORE_ANGLE)
-        ));
-        
-        blueCenterPlaceTraj.atTime("Vomit").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Vomitting algae blue center algae",
-         new ExpelGamePieceCommand(intake, 2.0d))
-         );
-        
         return routine;
     }
 

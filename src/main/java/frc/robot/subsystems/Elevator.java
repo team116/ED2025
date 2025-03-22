@@ -20,10 +20,10 @@ public class Elevator implements Subsystem {
     public static final double LEVEL_1_POSITION = -4.0d;
     public static final double LEVEL_2_POSITION = 0.0d;
     public static final double LEVEL_2_ALGAE_START_POSITION = 0.0d;
-    public static final double LEVEL_2_ALGAE_DISLODGE_POSITION = -8.0d;
+    public static final double LOWER_ALGAE_POSITION = -8.0d;
     public static final double LEVEL_3_POSITION = 0.0d;
     public static final double LEVEL_3_ALGAE_START_POSITION = 0.0d;
-    public static final double LEVEL_3_ALGAE_DISLODGE_POSITION = -12.83d;
+    public static final double UPPER_ALGAE_POSITION = -12.83d;
     public static final double LEVEL_4_POSITION = 0.0d;
     public static final double CORAL_STATION_INTAKE_POSITION = 0.0d;
     public static final double NET_POSITION = -22.5d;
