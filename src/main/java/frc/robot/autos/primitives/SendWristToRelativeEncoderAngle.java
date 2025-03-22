@@ -61,7 +61,7 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
 
     @Override
     public void end(boolean interrupted) {
-        wrist.stop();
+        wrist.stall();
         super.end(interrupted);
 
         if (!interrupted && desiredAngleCallback != null) {

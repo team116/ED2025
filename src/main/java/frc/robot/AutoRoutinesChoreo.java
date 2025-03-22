@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.autos.primitives.SendElevatorToPositionCommand;
 import frc.robot.autos.primitives.SendWristToAbsoluteEncoderAngle;
+import frc.robot.autos.primitives.SendWristToRelativeEncoderAngle;
 import frc.robot.commands.ParallelEventOutputBuilder;
 import frc.robot.autos.primitives.ConsumeGamePieceCommand;
 import frc.robot.autos.primitives.ExpelGamePieceCommand;
+import frc.robot.autos.primitives.HoldWristAtRelativeAngle;
 import frc.robot.autos.primitives.MoveWrist;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
@@ -56,6 +58,8 @@ public class AutoRoutinesChoreo {
     public AutoRoutine blueStraightEasy() {
         final AutoRoutine routine = autoFactory.newRoutine("My Awesome Blue Routine");
         final AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraight");
+        final AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraight2");
+        final AutoTrajectory blueStraightTraj3 = routine.trajectory("BlueStraight3");
 
         routine.active().onTrue(
             Commands.sequence(
@@ -67,13 +71,25 @@ public class AutoRoutinesChoreo {
 
         blueStraightTraj.atTime("Expel").onTrue(
             ParallelEventOutputBuilder.parallelPutEvent(
-                "Do It All",
+                "Dump coral",
                 Commands.sequence(
                     new MoveWrist(wrist, 1.0, true),
                     new ExpelGamePieceCommand(intake, 0.5),
-                    new MoveWrist(wrist, 1.0, false)
+                    new MoveWrist(wrist, 1.0, false),
+                    blueStraightTraj2.cmd()
                 )
             )
+        );
+
+        blueStraightTraj2.atTime("Extend").onTrue(
+            ParallelEventOutputBuilder.parallelPutEvent(
+                "Grab algae",
+                Commands.sequence(
+                    new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                    new SendElevatorToPositionCommand(elevator, 2.0, Elevator.LEVEL_2_ALGAE_DISLODGE_POSITION),
+                    Commands.runOnce(() -> intake.consume()),
+                    blueStraightTraj3.cmd()
+                ))
         );
 
         //blueStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
