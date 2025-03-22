@@ -12,6 +12,7 @@ import frc.robot.autos.primitives.SendWristToAbsoluteEncoderAngle;
 import frc.robot.commands.ParallelEventOutputBuilder;
 import frc.robot.autos.primitives.ConsumeGamePieceCommand;
 import frc.robot.autos.primitives.ExpelGamePieceCommand;
+import frc.robot.autos.primitives.MoveWrist;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Intake;
@@ -64,10 +65,19 @@ public class AutoRoutinesChoreo {
             )      
         );
 
+        blueStraightTraj.atTime("Expel").onTrue(
+            ParallelEventOutputBuilder.parallelPutEvent(
+                "Do It All",
+                Commands.sequence(
+                    new MoveWrist(wrist, 1.0, true),
+                    new ExpelGamePieceCommand(intake, 0.5),
+                    new MoveWrist(wrist, 1.0, false)
+                )
+            )
+        );
+
         //blueStraightTraj.atTime("Extend").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Extending blue straight", new SendElevatorToPositionCommand(elevator, 1.5d, Elevator.LEVEL_1_POSITION)));
-
         //blueStraightTraj.atTime("Rotate").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Rotating blue straight", new SendWristToAbsoluteEncoderAngle(wrist, 1.0d, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE)));
-
         //blueStraightTraj.atTime("Expel").onTrue(ParallelEventOutputBuilder.parallelPutEvent("Expelling blue straight", new ExpelGamePieceCommand(intake, 2.0d)));
     
         //blueStraightTraj.done().onTrue(ParallelEventOutputBuilder.parallelPutEvent("Done blue straight"));
