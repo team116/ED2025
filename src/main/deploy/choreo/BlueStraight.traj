@@ -12,7 +12,7 @@
  "params":{
   "waypoints":[
     {"x":{"exp":"7.47334079514 m", "val":7.47334079514}, "y":{"exp":"4.026 m", "val":4.026}, "heading":{"exp":"3.141592653589793 rad", "val":3.141592653589793}, "intervals":33, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
-    {"x":{"exp":"6.33034079514 m", "val":6.33034079514}, "y":{"exp":"4.026 m", "val":4.026}, "heading":{"exp":"3.141592653589793 rad", "val":3.141592653589793}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
+    {"x":{"exp":"6.28034079514 m", "val":6.28034079514}, "y":{"exp":"4.026 m", "val":4.026}, "heading":{"exp":"3.141592653589793 rad", "val":3.141592653589793}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
     {"from":0, "to":1, "data":{"type":"MaxVelocity", "props":{"max":{"exp":"0.75 m / s", "val":0.75}}}, "enabled":true}],
   "targetDt":{
