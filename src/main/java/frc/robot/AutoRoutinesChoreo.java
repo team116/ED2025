@@ -6,6 +6,7 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -278,11 +279,14 @@ public class AutoRoutinesChoreo {
     private AtomicBoolean isDone1 = new AtomicBoolean(false);
     private Trigger done1 = new Trigger(() -> isDone1.get());
     private AtomicBoolean isDone2 = new AtomicBoolean(false);
-    private Trigger done2 = new Trigger(() -> isDone2.get()); 
+    private Trigger done2 = new Trigger(() -> isDone2.get());
+    private AtomicBoolean isDone3 = new AtomicBoolean(false);
+    private Trigger done3 = new Trigger(() -> isDone3.get());
 
     public void clearTriggers() {
         isDone1.set(false);
         isDone2.set(false);
+        isDone3.set(false);
     }
 
     public AutoRoutine blueCenterAlgae() {
@@ -290,6 +294,8 @@ public class AutoRoutinesChoreo {
         AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraightAlgae");
         AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraightAlgae2");
         AutoTrajectory blueStraightTraj3 = routine.trajectory("BlueStraightAlgae3");
+        AutoTrajectory blueStraightTraj4 = routine.trajectory("BlueStraightAlgae4");
+
         routine.active().onTrue(
             blueStraightTraj.resetOdometry().andThen(
                 blueStraightTraj.cmd(),
@@ -299,9 +305,10 @@ public class AutoRoutinesChoreo {
 
         blueStraightTraj.done().onTrue(
             Commands.sequence(
-                new MoveWrist(wrist, 1.0, true),
-                new ExpelGamePieceCommand(intake, 0.5),
-                new MoveWrist(wrist, 1.0, false),
+                new MoveWrist(wrist, 0.8, true),
+                new ExpelGamePieceCommand(intake, 0.3),
+                new MoveWrist(wrist, 0.9, false),
+                new InstantCommand(() -> wrist.resetRelativeEncoder()),  // Yes, want to reset after sending to top position
                 new InstantCommand(() -> isDone1.set(true))
             )
         );
@@ -313,20 +320,52 @@ public class AutoRoutinesChoreo {
                 new SendWristToRelativeEncoderAngle(wrist, 3.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
                 new SendElevatorToPositionCommand(elevator, 8.0, Elevator.LOWER_ALGAE_POSITION),
                 new InstantCommand(() -> intake.consume()),
+                new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
                 new InstantCommand(() -> isDone2.set(true))
             )
         );
 
         routine.observe(done2).onTrue(blueStraightTraj3.cmd());
-
-        blueStraightTraj3.done().onTrue(
-          new DurationCommand(5.0)  
-        );
-
+     
+        Command holdWristStraightOut = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE);
+        Command holdElevatorAtLowerAlgaePosition = new HoldElevatorAtPosition(elevator, Double.MAX_VALUE, Elevator.LOWER_ALGAE_POSITION);
         blueStraightTraj3.active().onTrue(
             Commands.parallel(
-                new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
-                new HoldElevatorAtPosition(elevator, Double.MAX_VALUE, Elevator.LOWER_ALGAE_POSITION)
+                holdWristStraightOut,
+                holdElevatorAtLowerAlgaePosition
+            )
+        );
+
+        blueStraightTraj3.done().onTrue(
+            Commands.sequence(
+                // Commands.parallel(
+                //     new SendWristToRelativeEncoderAngle(wrist, 2.0, Wrist.WRIST_PROCESSOR_SCORE_ANGLE),
+                //     new SendElevatorToPositionCommand(elevator, 2.0, Elevator.PROCESSOR_POSITION)
+                // ),
+                new InstantCommand(() -> isDone3.set(true))
+            )
+        );
+
+        routine.observe(done3).onTrue(blueStraightTraj4.cmd());
+
+        // Command holdWristForProcessor = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_PROCESSOR_SCORE_ANGLE);
+        // Command holdElevatorAtProcessorPosition = new HoldElevatorAtPosition(elevator, Double.MAX_VALUE, Elevator.PROCESSOR_POSITION);
+        // blueStraightTraj4.active().onTrue(
+        //     Commands.parallel(
+        //         holdWristForProcessor,
+        //         holdElevatorAtProcessorPosition
+        //     )
+        // );
+
+        blueStraightTraj4.done().onTrue(
+            Commands.sequence(
+                new InstantCommand(() -> holdElevatorAtLowerAlgaePosition.cancel()),                
+                new SendElevatorToPositionCommand(elevator, 4.0, Elevator.PROCESSOR_POSITION),
+                new InstantCommand(() -> holdWristStraightOut.cancel()),
+                new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_PROCESSOR_SCORE_ANGLE),
+                new ExpelGamePieceCommand(intake, 1.5),
+                new DurationCommand(1.5),
+                new InstantCommand(() -> intake.stop())
             )
         );
 

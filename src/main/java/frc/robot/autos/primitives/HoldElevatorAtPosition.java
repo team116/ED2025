@@ -16,6 +16,7 @@ public class HoldElevatorAtPosition extends DurationCommand {
         
         this.elevator = elevator;
         this.desiredElevatorPosition = position;
+        addRequirements(elevator);
     }
 
     @Override
