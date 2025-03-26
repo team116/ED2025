@@ -37,7 +37,8 @@ public class HoldWristAtRelativeAngle extends DurationCommand implements Desired
 
     @Override
     public void end(boolean interrupted){
-        wrist.stop();
+        //wrist.stop();
+        wrist.stall();
     }
 
     private void holdAtAngle() {

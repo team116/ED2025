@@ -11,10 +11,12 @@ public class DefaultIntakeCommand extends Command {
 
     private final Intake intake;
     private final Joystick gunnerLogitech;
+    private final Joystick gunnerPad;
 
-    public DefaultIntakeCommand(Intake intake, Joystick gunnerLogitech) {
+    public DefaultIntakeCommand(Intake intake, Joystick gunnerLogitech, Joystick gunnerPad) {
         this.intake = intake;
         this.gunnerLogitech = gunnerLogitech;
+        this.gunnerPad = gunnerPad;
         addRequirements(intake);
     }
 
@@ -43,6 +45,12 @@ public class DefaultIntakeCommand extends Command {
             SmartDashboard.putString("Intake Mode", "Expel");
             intake.expel();
         } else if (gunnerLogitech.getRawButtonPressed(4)) {
+            SmartDashboard.putString("Intake Mode", "OFF");
+            intake.stop();
+        } else if (gunnerPad.getRawButton(12)) {
+            SmartDashboard.putString("Intake Mode", "Launch");
+            intake.launch();
+        } else if (gunnerPad.getRawButton(2)) {
             SmartDashboard.putString("Intake Mode", "OFF");
             intake.stop();
         }

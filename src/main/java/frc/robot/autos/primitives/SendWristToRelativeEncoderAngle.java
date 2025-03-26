@@ -1,5 +1,6 @@
 package frc.robot.autos.primitives;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DesiredAngleCallback;
 import frc.robot.commands.DefaultWristCommand;
 import frc.robot.subsystems.Wrist;
@@ -23,6 +24,7 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
         this.wrist = wrist;
         this.desiredWristAngle = angle;
         this.desiredAngleCallback = desiredAngleCallback;
+        addRequirements(wrist);  // FIXME: Make sure this doesn't cause problems...
     }
 
     @Override
@@ -43,6 +45,8 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
             wrist.stall();
             atDesiredAngle = true;
         } else {
+            SmartDashboard.putString("event", "Diff: " + diff);
+
             if (diff < 0) {
                 if (absDiff < OUTER_EPSILON) {
                     wrist.upSlow();

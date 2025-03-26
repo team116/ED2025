@@ -68,6 +68,11 @@ public class Intake implements Subsystem {
         rightIntakeMotor.set(-0.20);
     }
 
+    public void launch() {
+        leftIntakeMotor.set(0.55);
+        rightIntakeMotor.set(-0.55);
+    }
+
     public void stop() {
         leftIntakeMotor.stopMotor();
         rightIntakeMotor.stopMotor();

@@ -162,6 +162,8 @@ public class RobotContainer {
             autoChooserChoreo.addRoutine("Blue Left Algae", autoRoutinesChoreo::blueLeftAlgae);
             //autoChooserChoreo.addRoutine("Red Left Algae", autoRoutinesChoreo::redLeftAlgae);
             autoChooserChoreo.addRoutine("Blue Center Algae", autoRoutinesChoreo::blueCenterAlgae);
+            autoChooserChoreo.addRoutine("Blue Center Processor", autoRoutinesChoreo::blueCenterProcessor);
+            autoChooserChoreo.addRoutine("Blue Center Barge", autoRoutinesChoreo::blueCenterBarge);
             //autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
 
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);
@@ -222,7 +224,7 @@ public class RobotContainer {
 
             defaultElevatorCommand = new DefaultElevatorCommand(elevator, gunnerLogitech, gunnerPad);
             defaultWristCommand = new DefaultWristCommand(wrist, gunnerLogitech);
-            defaultIntakeCommand = new DefaultIntakeCommand(intake, gunnerLogitech);
+            defaultIntakeCommand = new DefaultIntakeCommand(intake, gunnerLogitech, gunnerPad);
             defaultClimberCommand = new DefaultClimberCommand(climber, gunnerPad);
 
             if (defaultWristCommand instanceof DesiredAngleCallback desiredAngleCallback) {
