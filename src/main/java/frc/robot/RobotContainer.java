@@ -153,17 +153,18 @@ public class RobotContainer {
             autoRoutinesChoreo = new AutoRoutinesChoreo(autoFactoryChoreo, elevator, wrist, intake);
 
             //autoChooserChoreo.addRoutine("SimplePath", autoRoutinesChoreo::simplePathAuto);
-            autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueStraightEasy);
-            autoChooserChoreo.addRoutine("Blue Left", autoRoutinesChoreo::blueLeftEasy);
-            autoChooserChoreo.addRoutine("Blue Right", autoRoutinesChoreo::blueRightEasy);
+            //autoChooserChoreo.addRoutine("Blue Center", autoRoutinesChoreo::blueStraightEasy);
+            //autoChooserChoreo.addRoutine("Blue Left", autoRoutinesChoreo::blueLeftEasy);
+            //autoChooserChoreo.addRoutine("Blue Right", autoRoutinesChoreo::blueRightEasy);
             //autoChooserChoreo.addRoutine("Red Center", autoRoutinesChoreo::redStraightEasy);
             //autoChooserChoreo.addRoutine("Red Left", autoRoutinesChoreo::redLeftEasy);
             //autoChooserChoreo.addRoutine("Red Right", autoRoutinesChoreo::redRightEasy);
-            autoChooserChoreo.addRoutine("Blue Left Algae", autoRoutinesChoreo::blueLeftAlgae);
+            //autoChooserChoreo.addRoutine("Blue Left Algae", autoRoutinesChoreo::blueLeftAlgae);
             //autoChooserChoreo.addRoutine("Red Left Algae", autoRoutinesChoreo::redLeftAlgae);
-            autoChooserChoreo.addRoutine("Blue Center Algae", autoRoutinesChoreo::blueCenterAlgae);
+            //autoChooserChoreo.addRoutine("Blue Center Algae", autoRoutinesChoreo::blueCenterProcessorDontUse);
             autoChooserChoreo.addRoutine("Blue Center Processor", autoRoutinesChoreo::blueCenterProcessor);
             autoChooserChoreo.addRoutine("Blue Center Barge", autoRoutinesChoreo::blueCenterBarge);
+            autoChooserChoreo.addRoutine("Blue Barge Algae", autoRoutinesChoreo::blueBargeAlgae);
             //autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
 
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);

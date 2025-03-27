@@ -289,7 +289,80 @@ public class AutoRoutinesChoreo {
         isDone3.set(false);
     }
 
-    public AutoRoutine blueCenterAlgae() {
+    public AutoRoutine blueBargeAlgae() {
+        AutoRoutine routine = autoFactory.newRoutine("Blue Barge Bound Algae");
+
+        AutoTrajectory blueBargeTraj1 = routine.trajectory("BlueBargeAlgae1");
+        AutoTrajectory blueBargeTraj2 = routine.trajectory("BlueBargeAlgae2");
+        AutoTrajectory blueBargeTraj3 = routine.trajectory("BlueBargeAlgae3");
+
+        routine.active().onTrue(
+            blueBargeTraj1.resetOdometry().andThen(
+                blueBargeTraj1.cmd(),
+                new InstantCommand(() -> wrist.stall())
+            )
+        );
+
+        blueBargeTraj1.done().onTrue(
+            Commands.sequence(
+            new MoveWrist(wrist, 0.8, true),
+            new ExpelGamePieceCommand(intake, 0.3),
+            new MoveWrist(wrist, 0.9, false),
+            new InstantCommand(() -> wrist.resetRelativeEncoder()), 
+            new InstantCommand(() -> isDone1.set(true))
+        ));
+
+        routine.observe(done1).onTrue(
+            blueBargeTraj2.cmd()
+        );
+
+        blueBargeTraj2.done().onTrue(
+            Commands.sequence(
+                new SendWristToRelativeEncoderAngle(wrist, 3.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new SendElevatorToPositionCommand(elevator, 8.0, Elevator.UPPER_ALGAE_POSITION),
+                new InstantCommand(() -> intake.consume()),
+                new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new InstantCommand(() -> isDone2.set(true))
+            )
+        );
+
+        routine.observe(done2).onTrue(
+            blueBargeTraj3.cmd()
+        );
+
+        Command holdWristStraightOut = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE);
+        Command holdElevatorAtUpperAlgaePosition = new HoldElevatorAtPosition(elevator, Double.MAX_VALUE, Elevator.UPPER_ALGAE_POSITION);
+
+        blueBargeTraj3.active().onTrue(
+            Commands.parallel(
+                holdWristStraightOut,
+                holdElevatorAtUpperAlgaePosition
+            )
+        );
+
+        blueBargeTraj3.done().onTrue(
+            Commands.sequence(
+                new InstantCommand(() -> holdElevatorAtUpperAlgaePosition.cancel()),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Send Elevator To Net")),
+                new SendElevatorToPositionCommand(elevator, 1.75, Elevator.NET_POSITION),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Start Cancel Wrist")),
+                new InstantCommand(() -> holdWristStraightOut.cancel()),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Adjust Wrist Angle")),
+                new SendWristToRelativeEncoderAngle(wrist, 3.0, Wrist.WRIST_BARGE_SCORE_ANGLE),
+                new InstantCommand(() -> SmartDashboard.putString("event", "About To Launch")),
+                new InstantCommand(() -> intake.launch()),
+                new DurationCommand(.5),
+                new InstantCommand(() -> SmartDashboard.putString("event", "Launched")),
+                new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new InstantCommand(() -> intake.stop())
+            )
+        );
+
+        return routine;
+    }
+
+    // Don't use this version, use the blueCenterProcessor that shares code with blueCenterBarge
+    public AutoRoutine blueCenterProcessorDontUse() {
         AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae");
         AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraightAlgae");
         AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraightAlgae2");
