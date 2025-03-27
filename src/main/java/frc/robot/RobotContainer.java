@@ -165,6 +165,7 @@ public class RobotContainer {
             autoChooserChoreo.addRoutine("Blue Center Processor", autoRoutinesChoreo::blueCenterProcessor);
             autoChooserChoreo.addRoutine("Blue Center Barge", autoRoutinesChoreo::blueCenterBarge);
             autoChooserChoreo.addRoutine("Blue Barge Algae", autoRoutinesChoreo::blueBargeAlgae);
+            autoChooserChoreo.addRoutine("Blue Processor Algae", autoRoutinesChoreo::blueProcessorAlgae);
             //autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
 
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);

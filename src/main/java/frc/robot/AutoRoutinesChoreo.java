@@ -289,6 +289,65 @@ public class AutoRoutinesChoreo {
         isDone3.set(false);
     }
 
+    public AutoRoutine blueProcessorAlgae() { //FIXME: Still needs to be tested
+        AutoRoutine routine = autoFactory.newRoutine("Blue Processor Bound Algae");
+
+        AutoTrajectory blueProcessorTraj1 = routine.trajectory("BlueProcessorAlgae1");
+        AutoTrajectory blueProcessorTraj2 = routine.trajectory("BlueProcessorAlgae2");
+        AutoTrajectory blueProcessorTraj3 = routine.trajectory("BlueProcessorAlgae3");
+
+        routine.active().onTrue(
+            blueProcessorTraj1.resetOdometry().andThen(
+                blueProcessorTraj1.cmd(),
+                new InstantCommand(() -> wrist.stall())
+            )
+        );
+
+        blueProcessorTraj1.done().onTrue(
+            Commands.sequence(
+            new MoveWrist(wrist, 0.8, true),
+            new ExpelGamePieceCommand(intake, 0.3),
+            new MoveWrist(wrist, 0.9, false),
+            new InstantCommand(() -> wrist.resetRelativeEncoder()), 
+            new InstantCommand(() -> isDone1.set(true))
+        ));
+
+        routine.observe(done1).onTrue(blueProcessorTraj2.cmd());
+
+        blueProcessorTraj2.done().onTrue(
+            Commands.sequence(
+                new SendWristToRelativeEncoderAngle(wrist, 3.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new SendElevatorToPositionCommand(elevator, 8.0, Elevator.UPPER_ALGAE_POSITION),
+                new InstantCommand(() -> intake.consume()),
+                new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
+                new InstantCommand(() -> isDone2.set(true))
+            ));
+
+        routine.observe(done2).onTrue(blueProcessorTraj3.cmd());
+
+        Command holdWristStraightOut = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE);
+        Command holdElevatorAtUpperAlgaePosition = new HoldElevatorAtPosition(elevator, Double.MAX_VALUE, Elevator.UPPER_ALGAE_POSITION);
+
+        blueProcessorTraj3.active().onTrue(
+            Commands.parallel(
+                holdWristStraightOut,
+                holdElevatorAtUpperAlgaePosition
+            )
+        );
+
+        blueProcessorTraj3.done().onTrue(
+            Commands.sequence(
+                new InstantCommand(() -> holdWristStraightOut.cancel()),                new SendElevatorToPositionCommand(elevator, 4.0, Elevator.PROCESSOR_POSITION),
+                new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_PROCESSOR_SCORE_ANGLE),
+                new ExpelGamePieceCommand(intake, 1.5),
+                new DurationCommand(1.5),
+                new InstantCommand(() -> intake.stop())
+            )
+        );
+
+        return routine;
+    }
+
     public AutoRoutine blueBargeAlgae() {
         AutoRoutine routine = autoFactory.newRoutine("Blue Barge Bound Algae");
 
