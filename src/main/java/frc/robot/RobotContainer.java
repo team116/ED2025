@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -304,19 +306,22 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+        AprilTagAutoAlign alignToAprilTag = new AprilTagAutoAlign(drivetrain);
+        
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(shape(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(shape(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(shapeRotation(-driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            Commands.sequence(
+                Commands.runOnce(() -> SmartDashboard.putString("Drive Mode", "Field Centric")),
+                drivetrain.applyRequest(() ->
+                    drive.withVelocityX(shape(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                        .withVelocityY(shape(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(shapeRotation(-driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                )
             )
         );
 
         driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driverController.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
-        ));
+        driverController.b().onTrue(alignToAprilTag);
 
         driverController.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
@@ -324,16 +329,23 @@ public class RobotContainer {
         driverController.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
+
+        driverController.pov(90).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityY(-0.35).withVelocityX(0))
+        );
+        driverController.pov(270).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityY(0.35).withVelocityX(0))
+        );        
         // driverController.pov(90).onTrue(new DriveDistance(drivetrain, DriveDirection.FORWARD, 10, Units.Inches));
         // driverController.pov(270).onTrue(new DriveDistance(drivetrain, DriveDirection.REVERSE, 10, Units.Inches));
-        AprilTagAutoAlign alignToRightTag = new AprilTagAutoAlign(drivetrain, true);
-        AprilTagAutoAlign alignToLeftTag = new AprilTagAutoAlign(drivetrain, false);
-        driverController.pov(90).onTrue(alignToRightTag);
-        driverController.pov(270).onTrue(alignToLeftTag);
+        // AprilTagAutoAlign alignToRightTag = new AprilTagAutoAlign(drivetrain, true);
+        // AprilTagAutoAlign alignToLeftTag = new AprilTagAutoAlign(drivetrain, false);
+        // driverController.pov(90).onTrue(alignToRightTag);
+        // driverController.pov(270).onTrue(alignToLeftTag);
         driverController.rightTrigger().and(driverController.leftTrigger())
             .onTrue(Commands.runOnce(() -> {
-                alignToLeftTag.cancel(); 
-                alignToRightTag.cancel();
+                //alignToLeftTag.cancel(); 
+                alignToAprilTag.cancel();
             }));
 
         // Run SysId routines when holding back/start and X/Y.
@@ -347,15 +359,19 @@ public class RobotContainer {
         driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // Toggle robot-centric control
-        driverController.rightBumper().toggleOnTrue(drivetrain.applyRequest(() ->
-            driveRobotCentric
-                .withVelocityX(shape(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(shape(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(shapeRotation(-driverController.getRightX()) * MaxAngularRate)
+        driverController.rightBumper().toggleOnTrue(
+            Commands.sequence(
+                Commands.runOnce(() -> SmartDashboard.putString("Drive Mode", "Robot Centric")),
+                drivetrain.applyRequest(() ->
+                    driveRobotCentric
+                    .withVelocityX(shape(-driverController.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(shape(-driverController.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(shapeRotation(-driverController.getRightX()) * MaxAngularRate)
+                )
             )
         );
 
-        driverController.rightBumper().toggleOnTrue(new RobotCentricDashboardCommand());
+        //driverController.rightBumper().toggleOnTrue(new RobotCentricDashboardCommand());
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -401,13 +417,24 @@ public class RobotContainer {
         wristGroundPickupAngleButton.onTrue(sendWristToGroundPickupAngle);
         wristProcessorAngleButton.onTrue(sendWristToProcessorAngle);
 
-        elevatorToBottomButton.onTrue(sendElevatorToBottom);
+        BooleanSupplier safeWristAngle = new BooleanSupplier() {
+            private int count = 0;
+
+            @Override
+            public boolean getAsBoolean() {
+                ++count;
+                SmartDashboard.putNumber("angleCheckCount", count);
+                return wrist.getRelativeAngle() > 115.0d;
+            }
+        };
+
+        elevatorToBottomButton.and(safeWristAngle).onTrue(sendElevatorToBottom);
         //elevatorToCoralStationIntakeButton.onTrue(sendElevatorToCoralStationIntake);
-        elevatorToLowerAlgaeButton.onTrue(sendElevatorToLowerAlgae);
+        elevatorToLowerAlgaeButton.and(safeWristAngle).onTrue(sendElevatorToLowerAlgae);
         //elevatorNudgeDownButton.onTrue(sendElevatorToLevel2);
-        elevatorToUpperAlgaeButton.onTrue(sendElevatorToUpperAlgae);
+        elevatorToUpperAlgaeButton.and(safeWristAngle).onTrue(sendElevatorToUpperAlgae);
         //elevatorToLevel4Button.onTrue(sendElevatorToLevel4);
-        elevatorToNetButton.onTrue(sendElevatorToNet);
+        elevatorToNetButton.and(safeWristAngle).onTrue(sendElevatorToNet);
 
         cancelAllMacrosButton
             .onTrue(Commands.runOnce(() -> sendWristToBargeScoreAngle.cancel()))
