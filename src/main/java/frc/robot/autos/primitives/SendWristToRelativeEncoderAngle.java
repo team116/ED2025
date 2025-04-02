@@ -11,19 +11,24 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
     private final double desiredWristAngle;
     private final DesiredAngleCallback desiredAngleCallback;
     private boolean atDesiredAngle;
+    private boolean isFast;
 
     private static final double OUTER_EPSILON = 10.0;
     private static final double EPSILON = 2.0;  // UGH.  Seems like 0.42857 degrees per click is what we get at wrist itself
 
     public SendWristToRelativeEncoderAngle(Wrist wrist, double maxTimeout, double angle) {
-        this(wrist, maxTimeout, angle, null);
+        this(wrist, maxTimeout, angle, null, false);
     }
 
     public SendWristToRelativeEncoderAngle(Wrist wrist, double maxTimeout, double angle, DesiredAngleCallback desiredAngleCallback) {
+        this(wrist, maxTimeout, angle, desiredAngleCallback, false);
+    }
+    public SendWristToRelativeEncoderAngle(Wrist wrist, double maxTimeout, double angle, DesiredAngleCallback desiredAngleCallback, boolean isFast) {
         super(maxTimeout);
         this.wrist = wrist;
         this.desiredWristAngle = angle;
         this.desiredAngleCallback = desiredAngleCallback;
+        this.isFast = isFast;
         addRequirements(wrist);  // FIXME: Make sure this doesn't cause problems...
     }
 
@@ -51,7 +56,11 @@ public class SendWristToRelativeEncoderAngle extends DurationCommand {
                 if (absDiff < OUTER_EPSILON) {
                     wrist.upSlow();
                 } else {
-                    wrist.up();
+                    if(isFast) {
+                        wrist.upFast();
+                    } else {
+                        wrist.up();
+                    }
                 }
             } else {
                 if (absDiff < OUTER_EPSILON) {

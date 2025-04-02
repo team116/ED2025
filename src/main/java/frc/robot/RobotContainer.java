@@ -118,7 +118,7 @@ public class RobotContainer {
     private final Command sendWristToStraightOutAngle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_LEVEL_4_NEUTRAL_ANGLE);
     private final Command sendWristToGroundPickupAngle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
     private final Command sendWristToProcessorAngle;// = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_DOWN_FULL_ANGLE);
-
+    
     private static final double ELEVATOR_TIMEOUT = 2.0d;
 
     private final Command sendElevatorToLowerAlgae;
@@ -232,7 +232,7 @@ public class RobotContainer {
             defaultClimberCommand = new DefaultClimberCommand(climber, gunnerPad);
 
             if (defaultWristCommand instanceof DesiredAngleCallback desiredAngleCallback) {
-                sendWristToBargeScoreAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_BARGE_SCORE_ANGLE, desiredAngleCallback);
+                sendWristToBargeScoreAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_BARGE_SCORE_ANGLE, desiredAngleCallback, true);
                 sendWristToStraightOutAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_STRAIGHT_OUT_ANGLE, desiredAngleCallback);
                 sendWristToGroundPickupAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_GROUND_PICKUP_ANGLE, desiredAngleCallback);
                 sendWristToProcessorAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_PROCESSOR_SCORE_ANGLE, desiredAngleCallback);

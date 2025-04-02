@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.wrist.resetRelativeEncoder();
+    //m_robotContainer.wrist.resetRelativeEncoder();
 
     SmartDashboard.putString(RobotContainer.SPEED_MODE_KEY, RobotContainer.FAST_MODE);
     // NOTE: The bottom line might have crashed the program

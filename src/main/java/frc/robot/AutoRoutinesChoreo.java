@@ -398,7 +398,10 @@ public class AutoRoutinesChoreo {
                 holdElevatorAtUpperAlgaePosition
             )
         );
-
+        Command moveDownCommands = Commands.parallel(
+            new SendWristToRelativeEncoderAngle(wrist,1.5d,110.0d),
+            new SendElevatorToPositionCommand(elevator, 1.0d, Elevator.BOTTOM_POSITION)
+        );
         blueBargeTraj3.done().onTrue(
             Commands.sequence(
                 new InstantCommand(() -> holdElevatorAtUpperAlgaePosition.cancel()),
@@ -413,7 +416,8 @@ public class AutoRoutinesChoreo {
                 new DurationCommand(.5),
                 new InstantCommand(() -> SmartDashboard.putString("event", "Launched")),
                 new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_STRAIGHT_OUT_ANGLE),
-                new InstantCommand(() -> intake.stop())
+                new InstantCommand(() -> intake.stop()),
+                moveDownCommands
             )
         );
 

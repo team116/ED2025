@@ -42,14 +42,19 @@ public class DefaultIntakeCommand extends Command {
             SmartDashboard.putString("Intake Mode", "Consume");
             intake.consume();
         } else if (gunnerLogitech.getRawButtonPressed(2)) {
-            SmartDashboard.putString("Intake Mode", "Expel");
-            intake.expel();
+            if (gunnerLogitech.getRawAxis(3) < 0) {
+                SmartDashboard.putString("Intake Mode", "Launch");
+                intake.launch();
+            } else {
+                SmartDashboard.putString("Intake Mode", "Expel");
+                intake.expel();
+            }
         } else if (gunnerLogitech.getRawButtonPressed(4)) {
             SmartDashboard.putString("Intake Mode", "OFF");
             intake.stop();
         } else if (gunnerPad.getRawButton(12)) {
-            SmartDashboard.putString("Intake Mode", "Launch");
-            intake.launch();
+            SmartDashboard.putString("Intake Mode", "Super Launch");
+            intake.superLaunch();
         } else if (gunnerPad.getRawButton(2)) {
             SmartDashboard.putString("Intake Mode", "OFF");
             intake.stop();
