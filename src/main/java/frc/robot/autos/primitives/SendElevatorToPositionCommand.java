@@ -9,7 +9,10 @@ public class SendElevatorToPositionCommand extends DurationCommand {
     private final double desiredElevatorPosition;
     private final StallOnInit stallOnInit;
     private int atDesiredPositionCount;
+    private boolean isFast;
 
+    private static final double FAR_EPSILON = 8.0;
+    private static final double DOWN_EPSILON = 6.0;
     private static final double CLOSE_EPSILON = 4.0;  // FIXME: What are the position values???? raw ticks, inches, something....
     private static final double EPSILON = 0.1;  // FIXME: What kind of slack will we accept for "at desired position"
 
@@ -18,11 +21,14 @@ public class SendElevatorToPositionCommand extends DurationCommand {
     }
 
     public SendElevatorToPositionCommand(Elevator elevator, double maxTimeout, double desiredElevatorPosition, StallOnInit stallOnInit) {
+        this(elevator, maxTimeout, desiredElevatorPosition, null, false);
+    }
+    public SendElevatorToPositionCommand(Elevator elevator, double maxTimeout, double desiredElevatorPosition, StallOnInit stallOnInit, boolean isFast) {
         super(maxTimeout);
         this.elevator = elevator;
         this.desiredElevatorPosition = desiredElevatorPosition;
         this.stallOnInit = stallOnInit;
-
+        this.isFast = isFast;
         addRequirements(elevator);
     }
 
@@ -46,7 +52,7 @@ public class SendElevatorToPositionCommand extends DurationCommand {
         } else {
             atDesiredPositionCount = 0;
             if (diff > 0) {
-                if (absDiff < CLOSE_EPSILON) {
+                if (absDiff < DOWN_EPSILON) {
                     elevator.moveDownSlow();
                 } else {
                     elevator.moveDown();
@@ -55,7 +61,11 @@ public class SendElevatorToPositionCommand extends DurationCommand {
                 if (absDiff < CLOSE_EPSILON) {
                     elevator.moveUpSlow();
                 } else {
-                    elevator.moveUp();
+                    if (isFast && absDiff > FAR_EPSILON) {
+                        elevator.moveUpFast();
+                    } else {
+                        elevator.moveUp();
+                    }
                 }
             }
         }

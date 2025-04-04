@@ -59,8 +59,8 @@ public class Intake implements Subsystem {
     }
 
     public void consume() {
-        leftIntakeMotor.set(-0.50);
-        rightIntakeMotor.set(0.50);
+        leftIntakeMotor.set(-0.65); //0.50
+        rightIntakeMotor.set(0.65); //0.50
     }
 
     public void expel() {

@@ -48,10 +48,10 @@ public class DefaultElevatorCommand extends Command implements StallOnInit {
 
         double adjustedWithDeadBand = withDeadband(shape(-gunnerLogitech.getY()));
         //elevator.move(withDeadband(-gunnerLogitech.getY()));
-        if (gunnerPad.getRawButton(5)) {
-            adjustedWithDeadBand = -0.195d;
+        if (gunnerPad.getRawButton(5)) { //nudge up
+            adjustedWithDeadBand = -0.245d; //-0.195
         }
-        if (gunnerPad.getRawButton(6)) {
+        if (gunnerPad.getRawButton(6)) { //nudge down
             adjustedWithDeadBand = 0.011d;
         }
 

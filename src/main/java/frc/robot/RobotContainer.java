@@ -165,9 +165,11 @@ public class RobotContainer {
             //autoChooserChoreo.addRoutine("Red Left Algae", autoRoutinesChoreo::redLeftAlgae);
             //autoChooserChoreo.addRoutine("Blue Center Algae", autoRoutinesChoreo::blueCenterProcessorDontUse);
             autoChooserChoreo.addRoutine("Blue Center Processor", autoRoutinesChoreo::blueCenterProcessor);
-            autoChooserChoreo.addRoutine("Blue Center Barge", autoRoutinesChoreo::blueCenterBarge);
-            autoChooserChoreo.addRoutine("Blue Barge Algae", autoRoutinesChoreo::blueBargeAlgae);
+            autoChooserChoreo.addRoutine("Blue Center Barge SuperLaunch", autoRoutinesChoreo::blueCenterBarge);
+            autoChooserChoreo.addRoutine("Blue Barge Algae SuperLaunch", autoRoutinesChoreo::blueBargeAlgae);
+            autoChooserChoreo.addRoutine("Blue Barge Algae", autoRoutinesChoreo::blueBargeAlgaeBetter);
             autoChooserChoreo.addRoutine("Blue Processor Algae", autoRoutinesChoreo::blueProcessorAlgae);
+            autoChooserChoreo.addRoutine("Blue Center Barge", autoRoutinesChoreo::blueCenterBargeBetter);
             //autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
 
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);
@@ -249,7 +251,7 @@ public class RobotContainer {
                 sendElevatorToUpperAlgae = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.UPPER_ALGAE_POSITION, stallOnInitCallback);
                 //sendElevatorToLevel4 = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.LEVEL_4_POSITION, stallOnInitCallback);
                 //sendElevatorToCoralStationIntake = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.CORAL_STATION_INTAKE_POSITION, stallOnInitCallback);
-                sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION, stallOnInitCallback);
+                sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION, stallOnInitCallback, true);
                 sendElevatorToBottom = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.BOTTOM_POSITION, stallOnInitCallback);
             } else {
                 sendElevatorToLowerAlgae = new InstantCommand();

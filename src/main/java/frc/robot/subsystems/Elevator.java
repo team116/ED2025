@@ -20,13 +20,13 @@ public class Elevator implements Subsystem {
     public static final double LEVEL_1_POSITION = -4.0d;
     public static final double LEVEL_2_POSITION = 0.0d;
     public static final double LEVEL_2_ALGAE_START_POSITION = 0.0d;
-    public static final double LOWER_ALGAE_POSITION = -8.0d;
+    public static final double LOWER_ALGAE_POSITION = -8.0d; //-8.0
     public static final double LEVEL_3_POSITION = 0.0d;
     public static final double LEVEL_3_ALGAE_START_POSITION = 0.0d;
-    public static final double UPPER_ALGAE_POSITION = -12.83d;
+    public static final double UPPER_ALGAE_POSITION = -12.83d; //-12.83
     public static final double LEVEL_4_POSITION = 0.0d;
     public static final double CORAL_STATION_INTAKE_POSITION = 0.0d;
-    public static final double NET_POSITION = -22.5d;
+    public static final double NET_POSITION = -22.5d; //-22.5
     public static final double BOTTOM_POSITION = -0.5d;  // This _should_ be 0.0d;
     public static final double PROCESSOR_POSITION = -1.75d;
 
@@ -90,16 +90,20 @@ public class Elevator implements Subsystem {
     }
 
     // NOTE: Negative is UP!!!!!
+    public void moveUpFast() {
+        move(-0.45d); //-0.45 
+    }
+    
     public void moveUp() {
-        move(-0.325d);  // FIXME: Find good speed for this
+        move(-0.325d);  // FIXME: Find good speed for this -0.325, -0.375
     }
 
     public void moveDown() {
-        move(0.05d);  // FIXME: Find a good value for this
+        move(0.05d);  // FIXME: Find a good value for this 0.05,0.13
     }
 
     public void moveUpSlow() {
-        move(-0.225d);
+        move(-0.225d); //-0.225, -0.275
     }
 
     public void moveDownSlow() {
