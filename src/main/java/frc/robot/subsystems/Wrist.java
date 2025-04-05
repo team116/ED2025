@@ -130,4 +130,8 @@ public class Wrist implements Subsystem {
     public void resetRelativeEncoder() {
         wristMotorEncoder.setPosition(90.0d/WRIST_DEGREES_PER_REVOLUTION);
     }
+
+    // public void resetAtBeginning() { //FIME: Very jank, but should work as a temporary fix for the initialization of the wrist motor being slightly off in autonomous
+    //     wristMotorEncoder.setPosition(92.0d/WRIST_DEGREES_PER_REVOLUTION);
+    // }
 }

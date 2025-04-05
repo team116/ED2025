@@ -21,7 +21,7 @@ public class SendElevatorToPositionCommand extends DurationCommand {
     }
 
     public SendElevatorToPositionCommand(Elevator elevator, double maxTimeout, double desiredElevatorPosition, StallOnInit stallOnInit) {
-        this(elevator, maxTimeout, desiredElevatorPosition, null, false);
+        this(elevator, maxTimeout, desiredElevatorPosition, stallOnInit, false);
     }
     public SendElevatorToPositionCommand(Elevator elevator, double maxTimeout, double desiredElevatorPosition, StallOnInit stallOnInit, boolean isFast) {
         super(maxTimeout);
