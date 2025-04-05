@@ -294,9 +294,9 @@ public class AutoRoutinesChoreo {
     public AutoRoutine blueProcessorAlgae() { //FIXME: Still needs to be tested
         AutoRoutine routine = autoFactory.newRoutine("Blue Processor Bound Algae");
 
-        AutoTrajectory blueProcessorTraj1 = routine.trajectory("BlueProcessorAlgae1");
-        AutoTrajectory blueProcessorTraj2 = routine.trajectory("BlueProcessorAlgae2");
-        AutoTrajectory blueProcessorTraj3 = routine.trajectory("BlueProcessorAlgae3");
+        AutoTrajectory blueProcessorTraj1 = routine.trajectory("ProcessorAlgae1");
+        AutoTrajectory blueProcessorTraj2 = routine.trajectory("ProcessorAlgae2");
+        AutoTrajectory blueProcessorTraj3 = routine.trajectory("ProcessorAlgae3");
 
         routine.active().onTrue(
             blueProcessorTraj1.resetOdometry().andThen(
@@ -350,12 +350,12 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
-    public AutoRoutine blueBargeAlgae() {
-        AutoRoutine routine = autoFactory.newRoutine("Blue Barge Bound Algae");
+    public AutoRoutine blueBargeAlgaeSuperLaunch() {
+        AutoRoutine routine = autoFactory.newRoutine("blue barge algae super launch");
 
-        AutoTrajectory blueBargeTraj1 = routine.trajectory("BlueBargeAlgae1");
-        AutoTrajectory blueBargeTraj2 = routine.trajectory("BlueBargeAlgae2");
-        AutoTrajectory blueBargeTraj3 = routine.trajectory("BlueBargeAlgae3");
+        AutoTrajectory blueBargeTraj1 = routine.trajectory("BargeAlgae1");
+        AutoTrajectory blueBargeTraj2 = routine.trajectory("BargeAlgae2");
+        AutoTrajectory blueBargeTraj3 = routine.trajectory("BargeAlgaeSuperLaunch");
         //AutoTrajectory blueBargeTraj4 = routine.trajectory("BlueBargeAlgae4");
 
         routine.active().onTrue(
@@ -432,12 +432,12 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
-    public AutoRoutine blueBargeAlgaeBetter() {
-        AutoRoutine routine = autoFactory.newRoutine("Blue Barge Bound Algae");
+    public AutoRoutine blueBargeAlgaeManeuver() {
+        AutoRoutine routine = autoFactory.newRoutine("blue barge algae maneuver");
 
-        AutoTrajectory blueBargeTraj1 = routine.trajectory("BlueBargeAlgae1");
-        AutoTrajectory blueBargeTraj2 = routine.trajectory("BlueBargeAlgae2");
-        AutoTrajectory blueBargeTraj3 = routine.trajectory("BlueBargeAlgae31");
+        AutoTrajectory blueBargeTraj1 = routine.trajectory("BargeAlgae1");
+        AutoTrajectory blueBargeTraj2 = routine.trajectory("BargeAlgae2");
+        AutoTrajectory blueBargeTraj3 = routine.trajectory("BargeAlgaeManeuver");
         
 
         routine.active().onTrue(
@@ -512,10 +512,10 @@ public class AutoRoutinesChoreo {
     // Don't use this version, use the blueCenterProcessor that shares code with blueCenterBarge
     public AutoRoutine blueCenterProcessorDontUse() {
         AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae");
-        AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraightAlgae");
-        AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraightAlgae2");
-        AutoTrajectory blueStraightTraj3 = routine.trajectory("BlueStraightAlgae3");
-        AutoTrajectory blueStraightTraj4 = routine.trajectory("BlueStraightAlgae4");
+        AutoTrajectory blueStraightTraj = routine.trajectory("StraightAlgae");
+        AutoTrajectory blueStraightTraj2 = routine.trajectory("StraightAlgae2");
+        AutoTrajectory blueStraightTraj3 = routine.trajectory("StraightAlgae3");
+        AutoTrajectory blueStraightTraj4 = routine.trajectory("StraightAlgae4");
 
         routine.active().onTrue(
             blueStraightTraj.resetOdometry().andThen(
@@ -599,9 +599,9 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
-    public AutoRoutine blueCenterBarge() {
-        AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae Barge");
-        AutoTrajectory blueStraightTrajBarge = routine.trajectory("BlueStraightBarge");
+    public AutoRoutine blueCenterBargeSuperLaunch() {
+        AutoRoutine routine = autoFactory.newRoutine("blue center barge super launch");
+        AutoTrajectory blueStraightTrajBarge = routine.trajectory("StraightBargeSuperLaunch");
         //AutoTrajectory blueStraightTrajBarge2 = routine.trajectory("BlueStraightBarge2");
         Command holdWristStraightOut = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE);
 
@@ -634,9 +634,9 @@ public class AutoRoutinesChoreo {
         return routine;
     }
 
-    public AutoRoutine blueCenterBargeBetter() {
-        AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae Barge");
-        AutoTrajectory blueStraightTrajBarge = routine.trajectory("BlueStraightBargeBetter");
+    public AutoRoutine blueCenterBargeManeuver() {
+        AutoRoutine routine = autoFactory.newRoutine("blue center barge maneuver");
+        AutoTrajectory blueStraightTrajBarge = routine.trajectory("StraightBargeManeuver");
         Command holdWristStraightOut = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE);
 
         blueCenterShared(routine, holdWristStraightOut);
@@ -664,8 +664,8 @@ public class AutoRoutinesChoreo {
     }
 
     public AutoRoutine blueCenterProcessor() {
-        AutoRoutine routine = autoFactory.newRoutine("Center Bound Blue Alliance Algae Processor");
-        AutoTrajectory blueStraightTraj4 = routine.trajectory("BlueStraightAlgae4");
+        AutoRoutine routine = autoFactory.newRoutine("blue center processor");
+        AutoTrajectory blueStraightTraj4 = routine.trajectory("StraightAlgae4");
         Command holdWristStraightOut = new HoldWristAtRelativeAngle(wrist, Double.MAX_VALUE, Wrist.WRIST_STRAIGHT_OUT_ANGLE);
 
         blueCenterShared(routine, holdWristStraightOut);
@@ -688,9 +688,9 @@ public class AutoRoutinesChoreo {
     }
 
     private void blueCenterShared(AutoRoutine routine, Command holdWristStraightOut) {
-        AutoTrajectory blueStraightTraj = routine.trajectory("BlueStraightAlgae");
-        AutoTrajectory blueStraightTraj2 = routine.trajectory("BlueStraightAlgae2");
-        AutoTrajectory blueStraightTraj3 = routine.trajectory("BlueStraightAlgae3");
+        AutoTrajectory blueStraightTraj = routine.trajectory("StraightAlgae");
+        AutoTrajectory blueStraightTraj2 = routine.trajectory("StraightAlgae2");
+        AutoTrajectory blueStraightTraj3 = routine.trajectory("StraightAlgae3");
 
         routine.active().onTrue(
             blueStraightTraj.resetOdometry().andThen(

@@ -164,12 +164,12 @@ public class RobotContainer {
             //autoChooserChoreo.addRoutine("Blue Left Algae", autoRoutinesChoreo::blueLeftAlgae);
             //autoChooserChoreo.addRoutine("Red Left Algae", autoRoutinesChoreo::redLeftAlgae);
             //autoChooserChoreo.addRoutine("Blue Center Algae", autoRoutinesChoreo::blueCenterProcessorDontUse);
-            autoChooserChoreo.addRoutine("Blue Center Processor", autoRoutinesChoreo::blueCenterProcessor);
-            autoChooserChoreo.addRoutine("Blue Center Barge SuperLaunch", autoRoutinesChoreo::blueCenterBarge);
-            autoChooserChoreo.addRoutine("Blue Barge Algae SuperLaunch", autoRoutinesChoreo::blueBargeAlgae);
-            autoChooserChoreo.addRoutine("Blue Barge Algae", autoRoutinesChoreo::blueBargeAlgaeBetter);
-            autoChooserChoreo.addRoutine("Blue Processor Algae", autoRoutinesChoreo::blueProcessorAlgae);
-            autoChooserChoreo.addRoutine("Blue Center Barge", autoRoutinesChoreo::blueCenterBargeBetter);
+            autoChooserChoreo.addRoutine("Center Processor", autoRoutinesChoreo::blueCenterProcessor);
+            autoChooserChoreo.addRoutine("Center Barge SuperLaunch", autoRoutinesChoreo::blueCenterBargeSuperLaunch);
+            autoChooserChoreo.addRoutine("Barge Algae SuperLaunch", autoRoutinesChoreo::blueBargeAlgaeSuperLaunch);
+            autoChooserChoreo.addRoutine("Barge Algae", autoRoutinesChoreo::blueBargeAlgaeManeuver);
+            autoChooserChoreo.addRoutine("Processor Algae", autoRoutinesChoreo::blueProcessorAlgae);
+            autoChooserChoreo.addRoutine("Center Barge", autoRoutinesChoreo::blueCenterBargeManeuver);
             //autoChooserChoreo.addRoutine("NewPath", autoRoutinesChoreo::NewPath);
 
             SmartDashboard.putData("Auto Choreo", autoChooserChoreo);
