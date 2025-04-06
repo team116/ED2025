@@ -29,6 +29,7 @@ public class Elevator implements Subsystem {
     public static final double NET_POSITION = -22.5d; //-22.5
     public static final double BOTTOM_POSITION = -0.5d;  // This _should_ be 0.0d;
     public static final double PROCESSOR_POSITION = -1.75d;
+    public static final double ALGAE_ON_CORAL_POSITION = -3.0d;
 
     private final MotorController leftElevatorMotor;
     private final MotorController rightElevatorMotor;

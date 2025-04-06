@@ -28,6 +28,7 @@ public class Wrist implements Subsystem {
     public static final double WRIST_PROCESSOR_SCORE_ANGLE = 160.0d;
     public static final double WRIST_GROUND_PICKUP_ANGLE = 190.0d;
     public static final double WRIST_TROUGH_LEVEL_FOR_AUTO = 170.0d;
+    public static final double WRIST_AUTO_SHOOT_ANGLE = 131.0d; //142
 
     // 5 - Barge steep, up 116.0
     // 6 - Flat, about 173

@@ -100,6 +100,7 @@ public class RobotContainer {
     //private final JoystickButton elevatorToCoralStationIntakeButton;
     private final JoystickButton elevatorToNetButton;
     private final JoystickButton elevatorToBottomButton;
+    private final JoystickButton elevatorToAlgaeOnCoralButton;
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
@@ -128,6 +129,7 @@ public class RobotContainer {
     //private final Command sendElevatorToCoralStationIntake;
     private final Command sendElevatorToNet;
     private final Command sendElevatorToBottom;
+    private final Command sendElevatorToAlgaeOnCoral;
 
     private boolean slowModeActive = false;
 
@@ -224,6 +226,7 @@ public class RobotContainer {
             //elevatorToCoralStationIntakeButton = new JoystickButton(gunnerPad, 2);
             elevatorToNetButton = new JoystickButton(gunnerPad, 1);
             elevatorToBottomButton = new JoystickButton(gunnerPad, 11);
+            elevatorToAlgaeOnCoralButton = new JoystickButton(gunnerPad, 2);
             //climber
             climberUpButton = new JoystickButton(gunnerPad, 14); // spike up, the actual mechanism moves up, not the robot
             climberDownButton = new JoystickButton(gunnerPad, 10); //spike down, the actual mechanism moves down
@@ -237,7 +240,7 @@ public class RobotContainer {
                 sendWristToBargeScoreAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_BARGE_SCORE_ANGLE, desiredAngleCallback, true);
                 sendWristToStraightOutAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_STRAIGHT_OUT_ANGLE, desiredAngleCallback);
                 sendWristToGroundPickupAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_GROUND_PICKUP_ANGLE, desiredAngleCallback);
-                sendWristToProcessorAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_PROCESSOR_SCORE_ANGLE, desiredAngleCallback);
+                sendWristToProcessorAngle = new SendWristToRelativeEncoderAngle(wrist, WRIST_TIMEOUT, Wrist.WRIST_AUTO_SHOOT_ANGLE, desiredAngleCallback);
             } else {
                 sendWristToBargeScoreAngle = new InstantCommand();
                 sendWristToStraightOutAngle = new InstantCommand();
@@ -253,6 +256,8 @@ public class RobotContainer {
                 //sendElevatorToCoralStationIntake = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.CORAL_STATION_INTAKE_POSITION, stallOnInitCallback);
                 sendElevatorToNet = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.NET_POSITION, stallOnInitCallback, true);
                 sendElevatorToBottom = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.BOTTOM_POSITION, stallOnInitCallback);
+                sendElevatorToAlgaeOnCoral = new SendElevatorToPositionCommand(elevator, ELEVATOR_TIMEOUT, Elevator.ALGAE_ON_CORAL_POSITION, stallOnInitCallback, false);
+
             } else {
                 sendElevatorToLowerAlgae = new InstantCommand();
                 //sendElevatorToLevel2 = new InstantCommand();
@@ -261,6 +266,7 @@ public class RobotContainer {
                 //sendElevatorToCoralStationIntake = new InstantCommand();
                 sendElevatorToNet = new InstantCommand();
                 sendElevatorToBottom = new InstantCommand();
+                sendElevatorToAlgaeOnCoral = new InstantCommand();
             }
             configureGunnerBindings();
         } else {
@@ -287,6 +293,7 @@ public class RobotContainer {
             //elevatorToCoralStationIntakeButton = null;
             elevatorToNetButton = null;
             elevatorToBottomButton = null;
+            elevatorToAlgaeOnCoralButton = null;
             defaultElevatorCommand = new InstantCommand();
             defaultWristCommand = new InstantCommand();
             defaultIntakeCommand = new InstantCommand();
@@ -302,6 +309,8 @@ public class RobotContainer {
             //sendElevatorToCoralStationIntake = new InstantCommand();
             sendElevatorToNet = new InstantCommand();
             sendElevatorToBottom = new InstantCommand();
+            sendElevatorToAlgaeOnCoral = new InstantCommand();
+            
         }
     }
 
@@ -431,6 +440,7 @@ public class RobotContainer {
         };
 
         elevatorToBottomButton.and(safeWristAngle).onTrue(sendElevatorToBottom);
+        elevatorToAlgaeOnCoralButton.and(safeWristAngle).onTrue(sendElevatorToAlgaeOnCoral);
         //elevatorToCoralStationIntakeButton.onTrue(sendElevatorToCoralStationIntake);
         elevatorToLowerAlgaeButton.and(safeWristAngle).onTrue(sendElevatorToLowerAlgae);
         //elevatorNudgeDownButton.onTrue(sendElevatorToLevel2);
@@ -449,7 +459,8 @@ public class RobotContainer {
             //.onTrue(Commands.runOnce(() -> sendElevatorToLevel2.cancel()))
             .onTrue(Commands.runOnce(() -> sendElevatorToUpperAlgae.cancel()))
             //.onTrue(Commands.runOnce(() -> sendElevatorToLevel4.cancel()))
-            .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()));
+            .onTrue(Commands.runOnce(() -> sendElevatorToNet.cancel()))
+            .onTrue(Commands.runOnce(() -> sendElevatorToAlgaeOnCoral.cancel()));
     }
 
     public Command getAutonomousCommand() {

@@ -339,7 +339,8 @@ public class AutoRoutinesChoreo {
 
         blueProcessorTraj3.done().onTrue(
             Commands.sequence(
-                new InstantCommand(() -> holdWristStraightOut.cancel()),                new SendElevatorToPositionCommand(elevator, 4.0, Elevator.PROCESSOR_POSITION),
+                new InstantCommand(() -> holdWristStraightOut.cancel()),                
+                new SendElevatorToPositionCommand(elevator, 4.0, Elevator.PROCESSOR_POSITION),
                 new SendWristToRelativeEncoderAngle(wrist, 1.0, Wrist.WRIST_PROCESSOR_SCORE_ANGLE),
                 new ExpelGamePieceCommand(intake, 1.5),
                 new DurationCommand(1.5),
@@ -616,7 +617,7 @@ public class AutoRoutinesChoreo {
                 new InstantCommand(() -> SmartDashboard.putString("event", "Start Cancel Wrist")),
                 new InstantCommand(() -> holdWristStraightOut.cancel()),
                 new InstantCommand(() -> SmartDashboard.putString("event", "Adjust Wrist Angle")),
-                new SendWristToRelativeEncoderAngle(wrist, 2.0, Wrist.WRIST_BARGE_SCORE_ANGLE),
+                new SendWristToRelativeEncoderAngle(wrist, 2.0, Wrist.WRIST_AUTO_SHOOT_ANGLE), //maybe use a higher shooting angle, Wrist.AUTO_SHOOTING_ANGLE
                 new InstantCommand(() -> SmartDashboard.putString("event", "About To Launch")),
                 new InstantCommand(() -> intake.superLaunch())//,
                 //new InstantCommand(() -> isDone4.set(true))

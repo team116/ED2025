@@ -55,10 +55,10 @@ public class DefaultIntakeCommand extends Command {
         } else if (gunnerPad.getRawButton(12)) {
             SmartDashboard.putString("Intake Mode", "Super Launch");
             intake.superLaunch();
-        } else if (gunnerPad.getRawButton(2)) {
-            SmartDashboard.putString("Intake Mode", "OFF");
-            intake.stop();
-        }
+        } //else if (gunnerPad.getRawButton(2)) {
+        //     SmartDashboard.putString("Intake Mode", "OFF");
+        //     intake.stop();
+        // }
     }
 
     @Override
